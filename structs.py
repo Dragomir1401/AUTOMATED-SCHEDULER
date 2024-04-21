@@ -6,24 +6,19 @@ class Assignment:
         self.prof = prof
         self.subject = subject
 
-class Activity:
-    def __init__(self, space, assignment : Assignment):
-        self.space = space
-        self.assignment = assignment
-
 class Interval:
-    def __init__(self, name, activities : list[Activity]):
-        self.name = name
-        self.activities = {activity.space: activity for activity in activities}
+    def __init__(self, places, assignments = None):
+        if assignments is None:
+            self.actvities = {place : None for place in places}
+        else:
+            self.actvities = {place : assignment for place, assignment in zip(places, assignments)}
 
 class Day:
-    def __init__(self, name, intervals : list[Interval]):
-        self.name = name
-        self.intervals = {interval.name: interval for interval in intervals}
-
+    def __init__(self, names, intervals : dict[str, Interval]):
+        self.intervals = {name : interval for name, interval in zip(names, intervals)}
 
 class TimetableNode:
-    def __init__(self, constraints, students_per_activity, days):
+    def __init__(self, constraints, students_per_activity, days: dict[str, Day]):
         self.constraints = constraints
         self.students_per_activity = students_per_activity
         self.days = days

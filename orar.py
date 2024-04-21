@@ -1,4 +1,4 @@
-from structs import TimetableNode, Activity, Interval, Day
+from structs import TimetableNode, Day, Interval, Assignment
 from hillClimbing import HillClimbing
 from utils import *
 import yaml
@@ -27,15 +27,11 @@ def __init__():
     input_dir = "inputs"
     yaml_dict = read_yaml_file(input_dir + '/dummy.yaml')
 
-    days = []
+    days = {}
     for day in yaml_dict[ZILE]:
-        intervals = []
+        intervals = {}
         for interval in yaml_dict[INTERVALE]:
-            activities = []
-            for spaces in yaml_dict[SALI]:
-                activity = Activity(spaces, None)
-                activities.append(activity)
-            interval = Interval(interval, activities)
+            interval = Interval(yaml_dict[SALI])
             intervals.append(interval)
         day = Day(day, intervals)
         days.append(day)

@@ -1,25 +1,53 @@
+from structs import TimetableNode, Activity, Interval, Day
+from hillClimbing import HillClimbing
 from utils import *
+import yaml
 
-# Create a node struct
-class Node:
-    def __init__(self, day, interval, space, prof, subject):
-        self.day = day
-        self.interval = interval
-        self.space = space
-        self.prof = prof
-        self.subject = subject
-    
-    def __str__(self):
-        return f'{self.day} {self.space} {self.prof} {self.subject}'
-    
-def create_node(day, space, prof, subject):
-    return Node(day, space, prof, subject)
+def create_pretty_print_dict(timetable):
+    pretty_print_dict = {}
+    for day in timetable:
+        pretty_print_dict[day] = {}
+        for interval in timetable[day]:
+            pretty_print_dict[day][interval] = {}
+            for classroom in timetable[day][interval]:
+                if timetable[day][interval][classroom]:
+                    prof, subject = timetable[day][interval][classroom]
+                    pretty_print_dict[day][interval][classroom] = (prof, subject)
+                else:
+                    pretty_print_dict[day][interval][classroom] = None
+    return pretty_print_dict
+
+def write_yaml_file(filepath, data):
+    with open(filepath, 'w') as file:
+        yaml.dump(data, file)
 
 
 def __init__():
-    input_dir = 'inputs'
+    algorithm = sys.argv[1]
+    input_dir = "inputs"
     yaml_dict = read_yaml_file(input_dir + '/dummy.yaml')
-    name_to_initials, initials_to_name = get_profs_initials(yaml_dict[PROFESORI].keys())
+
+    days = []
+    for day in yaml_dict[ZILE]:
+        intervals = []
+        for interval in yaml_dict[INTERVALE]:
+            activities = []
+            for spaces in yaml_dict[SALI]:
+                activity = Activity(spaces, None)
+                activities.append(activity)
+            interval = Interval(interval, activities)
+            intervals.append(interval)
+        day = Day(day, intervals)
+        days.append(day)
+    
+    initial_node = TimetableNode(yaml_dict, yaml_dict[MATERII], days)
+    if algorithm == 'hillClimbing':
+        hill_climbing = HillClimbing(1000, initial_node)
+        result = hill_climbing.hill_climbing()
+        pretty_print_dict = create_pretty_print_dict(result)
+        # print the dict in output path as a yaml file
+        write_yaml_file('outputs/orar.yaml', pretty_print_dict)
+        pretty_print_timetable(pretty_print_dict, 'outputs/orar.yaml')
 
 
 __init__()

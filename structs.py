@@ -7,11 +7,11 @@ class Assignment:
         self.subject = subject
 
 class Interval:
-    def __init__(self, places, assignments = None):
-        if assignments is None:
-            self.actvities = {place : None for place in places}
+    def __init__(self, places, assignments : dict[str, Assignment]):
+        if assignments == None:
+            self.assignments = {place : None for place in places}
         else:
-            self.actvities = {place : assignment for place, assignment in zip(places, assignments)}
+            self.assigmments = {place : assignment for place, assignment in zip(places, assignments)}
 
 class Day:
     def __init__(self, names, intervals : dict[str, Interval]):
@@ -26,69 +26,51 @@ class TimetableNode:
     def get_next_states(self):
         next_states = []
 
-        for day_class in self.days:
-            intervals = day_class.intervals
-
-            for interval_class in intervals:
-                activities = interval_class.activities
-
-                for activity_class in activities:
-                    space_name = activity_class.space
-                    if activity_class.assignment == None:
-                        next_states += self.apply_constraints_on_possible_states(day_class, interval_class, space_name)
+        for day_name, intervals in self.days.items():
+            print (day_name)
+            print (intervals)
+            for interval_name, assignments in intervals.intervals.items():
+                for assigmment_place, assigmment in assignments.assignments.items():
+                    if assigmment == None:
+                        next_states += self.apply_constraints_on_possible_states(day_name, interval_name, assigmment_place)
         return next_states
     
-    def apply_constraints_on_possible_states(self, day_class, interval_class, space_name):
+    def apply_constraints_on_possible_states(self, day_name, interval_name, assigmment_place):
         possible_states = []
 
         # MS, AD, IA, PCOM, etc
-        for activity_iterator in self.constraints[SALI][space_name][MATERII]:
+        for activity in self.constraints[SALI][assigmment_place][MATERII]:
             # 100 students, 50 students, etc
-            if self.students_per_activity[activity_iterator] > 0:
+            if self.students_per_activity[activity] > 0:
                 # prof, constraint
                 for prof, prof_constraints in self.constraints[PROFESORI].items():
-                    if self.check_constraint(prof_constraints, interval_class, activity_iterator, prof):
-                        new_spot = self.choose_interval(day_class, interval_class, space_name, prof, activity_iterator, self.constraints[SALI][space_name][CAPACITATE])
+                    if self.check_constraint(prof_constraints, day_name, interval_name, activity, prof):
+                        new_spot = self.choose_interval(day_name, interval_name, assigmment_place, prof, activity, self.constraints[SALI][assigmment_place][CAPACITATE])
                         possible_states.append(new_spot)
 
         return possible_states
 
-    def check_constraint(self, constraints, interval_class, activity, profesor):
+    def check_constraint(self, constraints, day_name, interval, activity, profesor):
         if activity not in constraints[MATERII]:
             return False
         
         # If profesor is already assigned to an activity in the same interval
-        for activity in interval_class.activities:
-            if activity.assignment is not None and activity.assignment.prof == profesor:
+        for place, assignment in self.days[day_name].intervals[interval].assigmments.items():
+            if assignment and assignment.prof == profesor:
                 return False
-        
         return True
     
-    def choose_interval(self, day_class, interval_class, space, prof, activity, capacity):
+    def choose_interval(self, day_name, interval, space, prof, activity, capacity):
         # Deep copy the current node info in a new node
         new_constraints = copy.deepcopy(self.constraints)
         new_students_per_activity = copy.deepcopy(self.students_per_activity)
         new_days = copy.deepcopy(self.days)
 
         new_node = TimetableNode(new_constraints, new_students_per_activity, new_days)
-        day_index = self.get_day_index(day_class.name)
-        interval_index = self.get_interval_index(interval_class.name, day_index)
-        new_node.days[day_index].intervals[interval_index].activities[activity] = Activity(space, Assignment(prof, activity))
-        new_node.students_per_activity[space] -= capacity
+        new_node.days[day_name].intervals[interval].assigmments[space] = Assignment(prof, activity)
+        new_node.students_per_activity[activity] -= capacity
         
         return new_node
-    
-    def get_day_index(self, day_name):
-        for idx, day in enumerate(self.days):
-            if day.name == day_name:
-                return idx
-        return -1
-
-    def get_interval_index(self, interval_name, day_index):
-        for idx, interval in enumerate(self.days[day_index].intervals):
-            if interval.name == interval_name:
-                return idx
-        return -1
         
     def eval_heuristic(self):
         sum = 0

@@ -119,7 +119,14 @@ class TimetableNode:
         sum = 0
         for activity, students in self.students_per_activity.items():
             sum += students
-        return sum + self.number_of_soft_restrictions_violated() * 10000000
+        return sum + self.number_of_soft_restrictions_violated() * 100000000
+    
+    def get_remaining_students(self):
+        '''Returns the number of remaining students to be assigned'''
+        sum = 0
+        for activity, students in self.students_per_activity.items():
+            sum += students
+        return sum
 
     def number_of_soft_restrictions_violated(self):
         '''Returns the number of soft restrictions violated'''

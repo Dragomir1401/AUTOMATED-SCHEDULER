@@ -1,0 +1,133 @@
+!!python/object:structs.TimetableNode
+constraints:
+  Intervale:
+    - (8, 10)
+    - (10, 12)
+    - (12, 14)
+  Materii:
+    DS: 100
+    IA: 75
+    MS: 100
+  Profesori:
+    Andreea Dinu:
+      Constrangeri:
+        - Luni
+        - Marti
+        - "!Miercuri"
+        - "!8-10"
+        - "!12-14"
+        - 10-12
+      Materii:
+        - DS
+        - IA
+    Cristina Dumitrescu:
+      Constrangeri:
+        - "!Luni"
+        - Marti
+        - "!Miercuri"
+        - "!10-12"
+        - 8-10
+        - 12-14
+      Materii:
+        - MS
+        - DS
+    Elena Gheorghe:
+      Constrangeri:
+        - Luni
+        - "!Marti"
+        - Miercuri
+        - "!10-14"
+        - 8-10
+      Materii:
+        - DS
+    Pavel Filipescu:
+      Constrangeri:
+        - Luni
+        - "!Marti"
+        - Miercuri
+        - "!8-10"
+        - 10-14
+      Materii:
+        - IA
+    Roxana Gheorghe:
+      Constrangeri:
+        - Luni
+        - Marti
+        - Miercuri
+        - "!10-12"
+        - 8-10
+        - 12-14
+      Materii:
+        - MS
+        - DS
+  Sali:
+    EG324:
+      Capacitate: 25
+      Materii:
+        - MS
+        - IA
+    EG390:
+      Capacitate: 25
+      Materii:
+        - DS
+  Zile:
+    - Luni
+    - Marti
+    - Miercuri
+days:
+  Luni:
+    (10, 12):
+      EG324: !!python/object:structs.Assignment
+        prof: Cristina Dumitrescu
+        subject: MS
+      EG390: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: DS
+    (12, 14):
+      EG324: !!python/object:structs.Assignment
+        prof: Cristina Dumitrescu
+        subject: MS
+      EG390: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: DS
+    (8, 10):
+      EG324: !!python/object:structs.Assignment
+        prof: Cristina Dumitrescu
+        subject: MS
+      EG390: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: DS
+  Marti:
+    (10, 12):
+      EG324: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: IA
+      EG390: null
+    (12, 14):
+      EG324: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: IA
+      EG390: null
+    (8, 10):
+      EG324: !!python/object:structs.Assignment
+        prof: Cristina Dumitrescu
+        subject: MS
+      EG390: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: DS
+  Miercuri:
+    (10, 12):
+      EG324: null
+      EG390: null
+    (12, 14):
+      EG324: null
+      EG390: null
+    (8, 10):
+      EG324: !!python/object:structs.Assignment
+        prof: Andreea Dinu
+        subject: IA
+      EG390: null
+students_per_activity:
+  DS: 0
+  IA: 0
+  MS: 0

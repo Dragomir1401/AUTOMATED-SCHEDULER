@@ -1,4 +1,4 @@
-from structs import TimetableNode, Day, Interval
+from structs import TimetableNode
 from hillClimbing import HillClimbing
 from utils import *
 import yaml
@@ -31,19 +31,21 @@ def __init__():
     for day_name in yaml_dict[ZILE]:
         intervals = {}
         for interval_name in yaml_dict[INTERVALE]:
-            interval = Interval(yaml_dict[SALI], None)
-            intervals[interval_name] = interval
-        day = Day(day_name, intervals)
-        days[day_name] = day
-    
+            assignments = {}
+            for space in yaml_dict[SALI]:
+                assignments[space] = None
+            intervals[interval_name] = assignments
+        days[day_name] = intervals
+
     initial_node = TimetableNode(yaml_dict, yaml_dict[MATERII], days)
     if algorithm == 'hillClimbing':
         hill_climbing = HillClimbing(1000, initial_node)
         result = hill_climbing.hill_climbing()
-        pretty_print_dict = create_pretty_print_dict(result)
+        # pretty_print_dict = create_pretty_print_dict(result)
         # print the dict in output path as a yaml file
-        write_yaml_file('outputs/orar.yaml', pretty_print_dict)
-        pretty_print_timetable(pretty_print_dict, 'outputs/orar.yaml')
-
+        write_yaml_file('orar.yaml', result)
+        # pretty_print_timetable(pretty_print_dict, 'outputs/orar.yaml')
+    else:
+        print("Algorithm not implemented")
 
 __init__()

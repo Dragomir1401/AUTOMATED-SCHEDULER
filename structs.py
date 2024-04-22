@@ -6,19 +6,8 @@ class Assignment:
         self.prof = prof
         self.subject = subject
 
-class Interval:
-    def __init__(self, places, assignments : dict[str, Assignment]):
-        if assignments == None:
-            self.assignments = {place : None for place in places}
-        else:
-            self.assigmments = {place : assignment for place, assignment in zip(places, assignments)}
-
-class Day:
-    def __init__(self, names, intervals : dict[str, Interval]):
-        self.intervals = {name : interval for name, interval in zip(names, intervals)}
-
 class TimetableNode:
-    def __init__(self, constraints, students_per_activity, days: dict[str, Day]):
+    def __init__(self, constraints, students_per_activity, days: dict[str, dict[str, dict[str, Assignment]]]):
         self.constraints = constraints
         self.students_per_activity = students_per_activity
         self.days = days
@@ -27,12 +16,10 @@ class TimetableNode:
         next_states = []
 
         for day_name, intervals in self.days.items():
-            print (day_name)
-            print (intervals)
-            for interval_name, assignments in intervals.intervals.items():
-                for assigmment_place, assigmment in assignments.assignments.items():
-                    if assigmment == None:
-                        next_states += self.apply_constraints_on_possible_states(day_name, interval_name, assigmment_place)
+            for interval_name, assignments in intervals.items():
+                for place, assigment in assignments.items():
+                    if assigment == None:
+                        next_states += self.apply_constraints_on_possible_states(day_name, interval_name, place)
         return next_states
     
     def apply_constraints_on_possible_states(self, day_name, interval_name, assigmment_place):
@@ -55,7 +42,7 @@ class TimetableNode:
             return False
         
         # If profesor is already assigned to an activity in the same interval
-        for place, assignment in self.days[day_name].intervals[interval].assigmments.items():
+        for place, assignment in self.days[day_name][interval].items():
             if assignment and assignment.prof == profesor:
                 return False
         return True
@@ -67,14 +54,14 @@ class TimetableNode:
         new_days = copy.deepcopy(self.days)
 
         new_node = TimetableNode(new_constraints, new_students_per_activity, new_days)
-        new_node.days[day_name].intervals[interval].assigmments[space] = Assignment(prof, activity)
+        new_node.days[day_name][interval][space] = Assignment(prof, activity)
         new_node.students_per_activity[activity] -= capacity
         
         return new_node
         
     def eval_heuristic(self):
         sum = 0
-        for students in self.students_per_activity:
+        for activity, students in self.students_per_activity.items():
             sum += students
         return sum
 

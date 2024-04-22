@@ -1,8 +1,9 @@
 import os
 from structs import TimetableNode
-from hillClimbing import HillClimbing
+from hillClimbing import RandomRestartHillClimbing
 from utils import *
 MAX_HC_ITERATIONS = 1000
+MAX_RESTARTS = 1000
 
 def create_days_dict(yaml_dict):
     '''Creates the days dictionary from the yaml dictionary'''
@@ -67,8 +68,9 @@ def __init__():
 
     if algorithm == 'hc':
         print("Hill Climbing...")
-        hill_climbing = HillClimbing(MAX_HC_ITERATIONS, initial_node)
-        result = hill_climbing.hill_climbing()
+        hill_climbing = RandomRestartHillClimbing(MAX_RESTARTS, MAX_HC_ITERATIONS, initial_node)
+        result, total_iterations = hill_climbing.random_restart_hill_climbing()
+        print(f"Total iterations: {total_iterations}")
         write_result_to_file(result, input_dir, output_dir, filename)
     else:
         print("Algorithm not implemented")

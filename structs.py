@@ -1,4 +1,5 @@
 import copy
+import random
 from utils import *
 
 class TimetableNode:
@@ -17,15 +18,40 @@ class TimetableNode:
         self.professors = professors
         self.chosen_assignment = chosen_assignment
 
+    def randomize(self):
+        '''Randomly shuffles days and intervals for initial state'''
+        day_list = list(self.days.keys())
+        random.shuffle(day_list)
+        for day in day_list:
+            intervals = list(self.days[day].keys())
+            random.shuffle(intervals)
+            for interval in intervals:
+                spaces = list(self.days[day][interval].keys())
+                random.shuffle(spaces)
+                for space in spaces:
+                    if self.days[day][interval][space] is None:
+                        # Assign a random activity and professor
+                        possible_activities = list(self.students_per_activity.keys())
+                        activity = random.choice(possible_activities)
+                        possible_professors = list(self.professors.keys())
+                        professor = random.choice(possible_professors)
+                        self.days[day][interval][space] = (professor, activity)
+
     def get_next_states(self):
         '''Returns a list of next states for the current node'''
         next_states = []
+        unassigned_places = [
+            (day, interval, place)
+            for day, intervals in self.days.items()
+            for interval, assignments in intervals.items()
+            for place, assignment in assignments.items()
+            if assignment is None
+        ]
+        random.shuffle(unassigned_places)
 
-        for day_name, intervals in self.days.items():
-            for interval_tuple, assignments in intervals.items():
-                for place, assigment in assignments.items():
-                    if assigment == None:
-                        next_states += self.apply_constraints_on_possible_states(day_name, interval_tuple, place)
+        for day, interval, place in unassigned_places:
+            next_states += self.apply_constraints_on_possible_states(day, interval, place)
+
         return next_states
     
     def apply_constraints_on_possible_states(self, day_name, interval_tuple, place):
@@ -120,3 +146,16 @@ class TimetableNode:
                                     if day_name in interval_constraint:
                                         number += 1
         return number
+    
+
+    def clone(self):
+        '''Creates a deep copy of this TimetableNode'''
+        # Deep copy ensures that all dicts and lists are new objects
+        new_constraints = copy.deepcopy(self.constraints)
+        new_students_per_activity = copy.deepcopy(self.students_per_activity)
+        new_days = copy.deepcopy(self.days)
+        new_professors = copy.deepcopy(self.professors)
+        new_chosen_assignment = copy.deepcopy(self.chosen_assignment)
+        
+        # Create a new instance of TimetableNode with the copied data
+        return TimetableNode(new_constraints, new_students_per_activity, new_days, new_professors, new_chosen_assignment)

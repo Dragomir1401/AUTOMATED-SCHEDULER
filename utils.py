@@ -9,6 +9,7 @@ MATERII = 'Materii'
 PROFESORI = 'Profesori'
 SALI = 'Sali'
 CAPACITATE = 'Capacitate'
+DAYS = 'days'
 
 def read_yaml_file(file_path : str) -> dict:
     '''

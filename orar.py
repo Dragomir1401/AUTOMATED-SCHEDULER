@@ -3,48 +3,41 @@ from hillClimbing import HillClimbing
 from utils import *
 import yaml
 
-def create_pretty_print_dict(timetable):
-    pretty_print_dict = {}
-    for day in timetable:
-        pretty_print_dict[day] = {}
-        for interval in timetable[day]:
-            pretty_print_dict[day][interval] = {}
-            for classroom in timetable[day][interval]:
-                if timetable[day][interval][classroom]:
-                    prof, subject = timetable[day][interval][classroom]
-                    pretty_print_dict[day][interval][classroom] = (prof, subject)
-                else:
-                    pretty_print_dict[day][interval][classroom] = None
-    return pretty_print_dict
-
-def write_yaml_file(filepath, data):
-    with open(filepath, 'w') as file:
-        yaml.dump(data, file)
-
-
 def __init__():
     algorithm = sys.argv[1]
     input_dir = "inputs"
-    yaml_dict = read_yaml_file(input_dir + '/dummy.yaml')
+    output_dir = "outputs"
+    yaml_dict = read_yaml_file(input_dir + '/orar_mare_relaxat.yaml')
 
     days = {}
     for day_name in yaml_dict[ZILE]:
         intervals = {}
-        for interval_name in yaml_dict[INTERVALE]:
+        for interval_string in yaml_dict[INTERVALE]:
+            interval_start, interval_end = interval_string.split(',')
+
+            # strip interval start and end of ()
+            interval_start = interval_start[1:]
+            interval_end = interval_end[:-1]
+
+            # Make them integers and not strings
+            interval_start = int(interval_start)
+            interval_end = int(interval_end)
+
             assignments = {}
             for space in yaml_dict[SALI]:
                 assignments[space] = None
-            intervals[interval_name] = assignments
+            intervals[(interval_start, interval_end)] = assignments
         days[day_name] = intervals
 
     initial_node = TimetableNode(yaml_dict, yaml_dict[MATERII], days)
     if algorithm == 'hillClimbing':
         hill_climbing = HillClimbing(1000, initial_node)
         result = hill_climbing.hill_climbing()
-        # pretty_print_dict = create_pretty_print_dict(result)
-        # print the dict in output path as a yaml file
-        write_yaml_file('orar.yaml', result)
-        # pretty_print_timetable(pretty_print_dict, 'outputs/orar.yaml')
+        table_Str = pretty_print_timetable(result.days, input_dir + '/orar_mare_relaxat.yaml')
+        
+        # Create output file as output/dummy.txt
+        with open(output_dir + '/orar_mare_relaxat.txt', 'w') as file:
+            file.write(table_Str)
     else:
         print("Algorithm not implemented")
 

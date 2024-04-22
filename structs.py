@@ -2,10 +2,11 @@ import copy
 from utils import *
 
 class TimetableNode:
-    def __init__(self, constraints, students_per_activity, days: dict[str, dict[str, dict[str, (str, str)]]]):
+    def __init__(self, constraints, students_per_activity, days: dict[str, dict[str, dict[str, (str, str)]]], professors : dict[str, int]):
         self.constraints = constraints
         self.students_per_activity = students_per_activity
         self.days = days
+        self.professors = professors
 
     def get_next_states(self):
         next_states = []
@@ -33,6 +34,11 @@ class TimetableNode:
         return possible_states
 
     def check_constraint(self, constraints, day_name, interval_tuple, activity, profesor):
+        # Profesors dont have more than 7 activities
+        if self.professors[profesor] > 6:
+            return False
+
+        # If activity is not in the constraints
         if activity not in constraints[MATERII]:
             return False
         
@@ -47,10 +53,12 @@ class TimetableNode:
         new_constraints = copy.deepcopy(self.constraints)
         new_students_per_activity = copy.deepcopy(self.students_per_activity)
         new_days = copy.deepcopy(self.days)
+        new_professors = copy.deepcopy(self.professors)
 
-        new_node = TimetableNode(new_constraints, new_students_per_activity, new_days)
+        new_node = TimetableNode(new_constraints, new_students_per_activity, new_days, new_professors)
         new_node.days[day_name][interval_tuple][space] = (prof, activity)
         new_node.students_per_activity[activity] -= capacity
+        new_node.professors[prof] += 1
         
         return new_node
         

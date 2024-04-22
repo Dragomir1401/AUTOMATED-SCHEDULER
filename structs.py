@@ -67,23 +67,6 @@ class TimetableNode:
             if assignment and assignment[0] == profesor:
                 return False
             
-        # If professor does not want to teach that day
-        not_day = "!" + day_name
-        if not_day in constraints[CONSTRANGERI]:
-            return False
-        
-        # If professor does not want to teach in that interval
-        for interval_constraint in constraints[CONSTRANGERI]:
-            # if interval constains a comma, it is a range
-            if '-' in interval_constraint and "!" in interval_constraint:
-                # Break the interval into start and end
-                start, end = interval_constraint.split('-')
-                start = start[1:]
-                start = int(start)
-                end = int(end)
-                if start <= interval_tuple[0] <= interval_tuple[1] <= end:
-                    return False
-        
         return True
     
     def choose_interval(self, parameters):
@@ -110,6 +93,30 @@ class TimetableNode:
         sum = 0
         for activity, students in self.students_per_activity.items():
             sum += students
-        return sum
+        return sum + self.number_of_soft_restrictions_violated() * 1000000
 
+    def number_of_soft_restrictions_violated(self):
+        '''Returns the number of soft restrictions violated'''
+        number = 0
 
+        for day_name, intervals in self.days.items():
+            for interval_tuple, assignments in intervals.items():
+                for place, assignment in assignments.items():
+                    if assignment:
+                        prof, activity = assignment
+                        prof_constraints = self.constraints[PROFESORI][prof][CONSTRANGERI]
+                        
+                        for interval_constraint in prof_constraints:
+                            if "!" in interval_constraint:
+                                if '-' in interval_constraint:
+                                    # Break the interval into start and end
+                                    start, end = interval_constraint.split('-')
+                                    start = start[1:]
+                                    start = int(start)
+                                    end = int(end)
+                                    if start <= interval_tuple[0] <= interval_tuple[1] <= end:
+                                        number += 1
+                                else:
+                                    if day_name in interval_constraint:
+                                        number += 1
+        return number

@@ -1,4 +1,5 @@
 
+from random import choice
 from structs import TimetableNode
 
 class HillClimbing:
@@ -17,20 +18,18 @@ class HillClimbing:
             iterations += 1
 
             neighbors = current_state.get_next_states()
-
+            
             if not neighbors:
                 break
-
-            for neighbor in neighbors:
-                if neighbor.eval_node() < current_state.eval_node():
-                    best_neighbor = neighbor
-                    break
             
-            if best_neighbor.eval_node() >= current_state.eval_node():
-                break
-
+            best_neighbor = neighbors[0]
+            for neighbor in neighbors:
+                if neighbor.eval_node() < best_neighbor.eval_node():
+                    best_neighbor = neighbor
+            
             current_state = best_neighbor
             current_state.apply_assignment_on_best_node()
+
 
         return current_state
         

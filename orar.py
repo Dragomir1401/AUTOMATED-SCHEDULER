@@ -5,13 +5,14 @@ from utils import *
 MAX_HC_ITERATIONS = 1000
 
 def create_days_dict(yaml_dict):
+    '''Creates the days dictionary from the yaml dictionary'''
     days = {}
     for day_name in yaml_dict[ZILE]:
         intervals = {}
         for interval_string in yaml_dict[INTERVALE]:
             interval_start, interval_end = interval_string.split(',')
 
-            # strip interval start and end of ()
+            # Strip interval start and end of ()
             interval_start = interval_start[1:]
             interval_end = interval_end[:-1]
 
@@ -27,39 +28,48 @@ def create_days_dict(yaml_dict):
     return days
 
 def create_professors_dict(yaml_dict):
+    '''Creates the professors dictionary from the yaml dictionary'''
     profs = {}
     for prof in list(yaml_dict[PROFESORI].keys()):
         profs[prof] = 0
     return profs
 
-def write_result_to_file(result, input_dir, output_dir):
-    table_str = pretty_print_timetable(result.days, input_dir + file + ".yaml")
+def write_result_to_file(result, input_dir, output_dir, filename):
+    '''Writes the result to a file'''
+    table_str = pretty_print_timetable(result.days, input_dir + filename + ".yaml")
 
-    with open(output_dir + file + ".txt", 'w') as file:
+    with open(output_dir + filename + ".txt", 'w') as file:
         file.write(table_str)
 
 def __init__():
+    '''Main function'''
     algorithm = sys.argv[1]
-    file = sys.argv[2]
+    filename = sys.argv[2]
     input_dir = "inputs/"
     output_dir = "outputs/"
     
-    # check if the file exists
-    if not os.path.isfile(input_dir + file + ".yaml"):
+    # Check if the file exists
+    if not os.path.isfile(input_dir + filename + ".yaml"):
         print("File not found")
         return
     
-    yaml_dict = read_yaml_file(input_dir + file + ".yaml")
+    # Read the yaml file
+    yaml_dict = read_yaml_file(input_dir + filename + ".yaml")
+
+    # Create the days and professors dictionaries
     days = create_days_dict(yaml_dict)
+
+    # Create the professors dictionary
     profs = create_professors_dict(yaml_dict)
 
+    # Create the initial node
     initial_node = TimetableNode(yaml_dict, yaml_dict[MATERII], days, profs)
 
     if algorithm == 'hc':
         print("Hill Climbing...")
         hill_climbing = HillClimbing(MAX_HC_ITERATIONS, initial_node)
         result = hill_climbing.hill_climbing()
-        write_result_to_file(result, input_dir, output_dir)
+        write_result_to_file(result, input_dir, output_dir, filename)
     else:
         print("Algorithm not implemented")
 

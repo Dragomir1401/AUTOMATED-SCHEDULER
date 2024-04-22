@@ -62,31 +62,29 @@ class TimetableNode:
         if activity not in constraints[MATERII]:
             return False
         
-        # If professor does not want to teach in that interval
-        not_interval = "!" + str(interval_tuple[0]) + "-" + str(interval_tuple[1])
-        if not_interval in constraints[CONSTRANGERI]:
-            return False
-        
+        # If profesor is already assigned to an activity in the same interval
+        for place, assignment in self.days[day_name][interval_tuple].items():
+            if assignment and assignment[0] == profesor:
+                return False
+            
         # If professor does not want to teach that day
         not_day = "!" + day_name
         if not_day in constraints[CONSTRANGERI]:
             return False
         
-        # If profesor is already assigned to an activity in the same interval
-        for place, assignment in self.days[day_name][interval_tuple].items():
-            if assignment and assignment[0] == profesor:
-                return False
+        # If professor does not want to teach in that interval
+        for interval_constraint in constraints[CONSTRANGERI]:
+            # if interval constains a comma, it is a range
+            if '-' in interval_constraint and "!" in interval_constraint:
+                # Break the interval into start and end
+                start, end = interval_constraint.split('-')
+                start = start[1:]
+                start = int(start)
+                end = int(end)
+                if start <= interval_tuple[0] <= interval_tuple[1] <= end:
+                    return False
+        
         return True
-    
-    def deep_copy(self):
-        '''Returns a deep copy of the current node'''
-        new_constraints = copy.deepcopy(self.constraints)
-        new_students_per_activity = copy.deepcopy(self.students_per_activity)
-        new_days = copy.deepcopy(self.days)
-        new_professors = copy.deepcopy(self.professors)
-
-        new_node = TimetableNode(new_constraints, new_students_per_activity, new_days, new_professors)
-        return new_node
     
     def choose_interval(self, parameters):
         '''Returns a new node with the assignment chosen'''

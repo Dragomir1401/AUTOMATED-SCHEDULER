@@ -30,6 +30,7 @@ class HillClimbing:
                 break
 
             current_state = best_neighbor
+            current_state.apply_assignment_on_best_node()
 
         return current_state
         

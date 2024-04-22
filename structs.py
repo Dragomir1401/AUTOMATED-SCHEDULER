@@ -4,12 +4,18 @@ from utils import *
 class TimetableNode:
     '''Class that represents a node in searching algorithm'''
 
-    def __init__(self, constraints, students_per_activity, days: dict[str, dict[str, dict[str, (str, str)]]], professors : dict[str, int]):
+    def __init__(self, 
+                 constraints, 
+                 students_per_activity, 
+                 days: dict[str, dict[str, dict[str, (str, str)]]],
+                 professors : dict[str, int],
+                 chosen_assignment = None):
         '''Constructor for the TimetableNode class'''
         self.constraints = constraints
         self.students_per_activity = students_per_activity
         self.days = days
         self.professors = professors
+        self.chosen_assignment = chosen_assignment
 
     def get_next_states(self):
         '''Returns a list of next states for the current node'''
@@ -56,6 +62,16 @@ class TimetableNode:
         if activity not in constraints[MATERII]:
             return False
         
+        # If professor does not want to teach in that interval
+        not_interval = "!" + str(interval_tuple[0]) + "-" + str(interval_tuple[1])
+        if not_interval in constraints[CONSTRANGERI]:
+            return False
+        
+        # If professor does not want to teach that day
+        not_day = "!" + day_name
+        if not_day in constraints[CONSTRANGERI]:
+            return False
+        
         # If profesor is already assigned to an activity in the same interval
         for place, assignment in self.days[day_name][interval_tuple].items():
             if assignment and assignment[0] == profesor:
@@ -72,25 +88,24 @@ class TimetableNode:
         new_node = TimetableNode(new_constraints, new_students_per_activity, new_days, new_professors)
         return new_node
     
-    def update_new_node(self, new_node, parameters):
-        '''Updates the current node with the new assignment'''
-
-        # Unpack the parameters
-        day_name, interval_tuple, space, prof, activity, capacity = parameters
-
-        # Update the new node
-        new_node.days[day_name][interval_tuple][space] = (prof, activity)
-        new_node.students_per_activity[activity] -= capacity
-        new_node.professors[prof] += 1
-    
     def choose_interval(self, parameters):
         '''Returns a new node with the assignment chosen'''
+        day_name, interval_tuple, space, prof, activity, capacity = parameters
+        assignment = (day_name, interval_tuple, space, prof, activity)
 
-        # Deep copy the current node info in a new node
-        new_node = self.deep_copy()
-        self.update_new_node(new_node, parameters)
+        new_student_per_activity = copy.copy(self.students_per_activity)
+        new_professors = copy.copy(self.professors)
+        new_student_per_activity[activity] -= capacity
+        new_professors[prof] += 1
+
+        new_node = TimetableNode(self.constraints, new_student_per_activity, self.days, new_professors, assignment)
         
         return new_node
+    
+    def apply_assignment_on_best_node(self):
+        '''Applies the best assignment on the current node'''
+        day, interval, space, prof, activity = self.chosen_assignment
+        self.days[day][interval][space] = (prof, activity)
         
     def eval_node(self):
         '''Returns the evaluation of the current node for hill climbing'''

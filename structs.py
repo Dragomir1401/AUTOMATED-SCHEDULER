@@ -36,6 +36,7 @@ class TimetableNode:
                         possible_professors = list(self.professors.keys())
                         professor = random.choice(possible_professors)
                         self.days[day][interval][space] = (professor, activity)
+                        return
 
     def get_next_states(self):
         '''Returns a list of next states for the current node'''
@@ -116,17 +117,13 @@ class TimetableNode:
         
     def eval_node(self):
         '''Returns the evaluation of the current node for hill climbing'''
-        sum = 0
-        for activity, students in self.students_per_activity.items():
-            sum += students
-        return sum + self.number_of_soft_restrictions_violated() * 100000000
-    
+        remaining_students = self.get_remaining_students()
+        penalty = self.number_of_soft_restrictions_violated() * 100000000
+        return remaining_students * 10000 + penalty  # Emphasize on assigning all students
+
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''
-        sum = 0
-        for activity, students in self.students_per_activity.items():
-            sum += students
-        return sum
+        return sum(self.students_per_activity.values())
 
     def number_of_soft_restrictions_violated(self):
         '''Returns the number of soft restrictions violated'''

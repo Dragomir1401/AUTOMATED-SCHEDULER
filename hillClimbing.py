@@ -29,7 +29,7 @@ class RandomRestartHillClimbing:
             # Prepare the next initial state for a new restart
             self.initial_state.randomize()  # Assumes the TimetableNode class has a method to randomize its state
 
-        print (f"Best evaluation: {best_solution.eval_node()}")
+        print (f"Best evaluation: {best_solution.get_remaining_students()}")
         return best_solution, total_iterations
 
     def hill_climbing(self, initial_state):

@@ -1,15 +1,10 @@
+import os
 from structs import TimetableNode
 from hillClimbing import HillClimbing
 from utils import *
-import yaml
+MAX_HC_ITERATIONS = 1000
 
-def __init__():
-    algorithm = sys.argv[1]
-    file = sys.argv[2]
-    input_dir = "inputs/"
-    output_dir = "outputs/"
-    yaml_dict = read_yaml_file(input_dir + file + ".yaml")
-
+def create_days_dict(yaml_dict):
     days = {}
     for day_name in yaml_dict[ZILE]:
         intervals = {}
@@ -20,7 +15,7 @@ def __init__():
             interval_start = interval_start[1:]
             interval_end = interval_end[:-1]
 
-            # Make them integers and not strings
+            # Make them integers
             interval_start = int(interval_start)
             interval_end = int(interval_end)
 
@@ -29,21 +24,42 @@ def __init__():
                 assignments[space] = None
             intervals[(interval_start, interval_end)] = assignments
         days[day_name] = intervals
+    return days
 
-    # Dictionary with prof names as keys and assigned activities as values
+def create_professors_dict(yaml_dict):
     profs = {}
     for prof in list(yaml_dict[PROFESORI].keys()):
         profs[prof] = 0
+    return profs
+
+def write_result_to_file(result, input_dir, output_dir):
+    table_str = pretty_print_timetable(result.days, input_dir + file + ".yaml")
+
+    with open(output_dir + file + ".txt", 'w') as file:
+        file.write(table_str)
+
+def __init__():
+    algorithm = sys.argv[1]
+    file = sys.argv[2]
+    input_dir = "inputs/"
+    output_dir = "outputs/"
+    
+    # check if the file exists
+    if not os.path.isfile(input_dir + file + ".yaml"):
+        print("File not found")
+        return
+    
+    yaml_dict = read_yaml_file(input_dir + file + ".yaml")
+    days = create_days_dict(yaml_dict)
+    profs = create_professors_dict(yaml_dict)
 
     initial_node = TimetableNode(yaml_dict, yaml_dict[MATERII], days, profs)
+
     if algorithm == 'hc':
-        hill_climbing = HillClimbing(1000, initial_node)
+        print("Hill Climbing...")
+        hill_climbing = HillClimbing(MAX_HC_ITERATIONS, initial_node)
         result = hill_climbing.hill_climbing()
-        table_Str = pretty_print_timetable(result.days, input_dir + file + ".yaml")
-        
-        # Create output file as output/dummy.txt
-        with open(output_dir + file + ".txt", 'w') as file:
-            file.write(table_Str)
+        write_result_to_file(result, input_dir, output_dir)
     else:
         print("Algorithm not implemented")
 

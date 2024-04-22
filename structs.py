@@ -22,13 +22,13 @@ class TimetableNode:
                         next_states += self.apply_constraints_on_possible_states(day_name, interval_tuple, place)
         return next_states
     
-    def apply_constraints_on_possible_states(self, day_name, interval_tuple, assigmment_place):
+    def apply_constraints_on_possible_states(self, day_name, interval_tuple, place):
         '''Returns a list of possible states for the current node'''
         possible_states = []
 
         # Start with classrooms because they eliminate the most possibilities
         # MS, AD, IA, PCOM, etc
-        for activity in self.constraints[SALI][assigmment_place][MATERII]:
+        for activity in self.constraints[SALI][place][MATERII]:
             # If we still have students to assign to this activity
             # 100 students, 50 students, etc
             if self.students_per_activity[activity] > 0:
@@ -36,7 +36,11 @@ class TimetableNode:
                 # prof, constraint
                 for prof, prof_constraints in self.constraints[PROFESORI].items():
                     if self.check_constraint(prof_constraints, day_name, interval_tuple, activity, prof):
-                        new_spot = self.choose_interval(day_name, interval_tuple, assigmment_place, prof, activity, self.constraints[SALI][assigmment_place][CAPACITATE])
+                        # Make a list with all parameters for the new state
+                        # day, interval, classroom, prof, activity, capacity
+                        capacitites = self.constraints[SALI][place][CAPACITATE]
+                        parameters = (day_name, interval_tuple, place, prof, activity, capacitites)
+                        new_spot = self.choose_interval(parameters)
                         possible_states.append(new_spot)
 
         return possible_states
@@ -44,7 +48,7 @@ class TimetableNode:
     def check_constraint(self, constraints, day_name, interval_tuple, activity, profesor):
         '''Returns True if the constraints are met, False otherwise'''
 
-        # Profesors dont have more than 7 activities
+        # Profesors can't have more than 7 activities
         if self.professors[profesor] > 6:
             return False
 
@@ -68,14 +72,23 @@ class TimetableNode:
         new_node = TimetableNode(new_constraints, new_students_per_activity, new_days, new_professors)
         return new_node
     
-    def choose_interval(self, day_name, interval_tuple, space, prof, activity, capacity):
+    def update_new_node(self, new_node, parameters):
+        '''Updates the current node with the new assignment'''
+
+        # Unpack the parameters
+        day_name, interval_tuple, space, prof, activity, capacity = parameters
+
+        # Update the new node
+        new_node.days[day_name][interval_tuple][space] = (prof, activity)
+        new_node.students_per_activity[activity] -= capacity
+        new_node.professors[prof] += 1
+    
+    def choose_interval(self, parameters):
         '''Returns a new node with the assignment chosen'''
 
         # Deep copy the current node info in a new node
         new_node = self.deep_copy()
-        new_node.days[day_name][interval_tuple][space] = (prof, activity)
-        new_node.students_per_activity[activity] -= capacity
-        new_node.professors[prof] += 1
+        self.update_new_node(new_node, parameters)
         
         return new_node
         

@@ -1,18 +1,43 @@
 import copy
+from functools import lru_cache
 import random
 from utils import *
+
+class ConstraintManager:
+    '''Class that handles constraints shared across all TimetableNodes'''
+    def __init__(self, constraints):
+        self.constraints = constraints
+
+    @lru_cache(maxsize=None)
+    def compute_number_of_accepted_activities_per_place(self, place):
+        '''Returns the number of accepted activities per place'''
+        number = 0
+        for activity in self.constraints[SALI][place][MATERII]:
+            number += 1
+
+        return number
+    
+    @lru_cache(maxsize=None)
+    def number_of_places_accepting_activity(self, activity):
+        '''Returns the number of places accepting the activity'''
+        number = 0
+        for place in self.constraints[SALI]:
+            if activity in self.constraints[SALI][place][MATERII]:
+                number += 1
+
+        return number
 
 class TimetableNode:
     '''Class that represents a node in searching algorithm'''
 
     def __init__(self, 
-                 constraints, 
-                 students_per_activity, 
+                 constraints_manager: ConstraintManager, 
+                 students_per_activity: dict[str, int],
                  days: dict[str, dict[str, dict[str, (str, str)]]],
                  professors : dict[str, int],
                  chosen_assignment = None):
         '''Constructor for the TimetableNode class'''
-        self.constraints = constraints
+        self.constraints_manager = constraints_manager
         self.students_per_activity = students_per_activity
         self.days = days
         self.professors = professors
@@ -23,7 +48,7 @@ class TimetableNode:
         next_states = []
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
-                sorted_assignments = sorted(assignments.items(), key=lambda x: self.compute_number_of_accepted_activities_per_place(x[0]))
+                sorted_assignments = sorted(assignments.items(), key=lambda x: self.constraints_manager.compute_number_of_accepted_activities_per_place(x[0]))
                 random.shuffle(sorted_assignments)  # Shuffle to introduce randomness
                 for place, assignment in sorted_assignments:
                     if assignment == None:
@@ -40,19 +65,19 @@ class TimetableNode:
         possible_states = []
         
         # Sort activities by the number of students needing assignment
-        sorted_activities = sorted(self.constraints[SALI][place][MATERII],
+        sorted_activities = sorted(self.constraints_manager.constraints[SALI][place][MATERII],
                                    key=lambda act: -self.students_per_activity[act])
         
         # Then sort activities by the number of places accepting the activity
         sorted_activities = sorted(sorted_activities,
-                                   key=lambda act: self.number_of_places_accepting_activity(act))
+                                   key=lambda act: self.constraints_manager.number_of_places_accepting_activity(act))
         
 
         for activity in sorted_activities:
             if self.students_per_activity[activity] > 0:
-                for prof, prof_constraints in self.constraints[PROFESORI].items():
+                for prof, prof_constraints in self.constraints_manager.constraints[PROFESORI].items():
                     if self.check_constraint(prof_constraints, day_name, interval_tuple, activity, prof):
-                        capacities = self.constraints[SALI][place][CAPACITATE]
+                        capacities = self.constraints_manager.constraints[SALI][place][CAPACITATE]
                         parameters = (day_name, interval_tuple, place, prof, activity, capacities)
                         new_spot = self.choose_interval(parameters)
                         possible_states.append(new_spot)
@@ -87,7 +112,7 @@ class TimetableNode:
         new_student_per_activity[activity] -= capacity
         new_professors[prof] += 1
 
-        new_node = TimetableNode(self.constraints, new_student_per_activity, self.days, new_professors, assignment)
+        new_node = TimetableNode(self.constraints_manager, new_student_per_activity, self.days, new_professors, assignment)
         
         return new_node
     
@@ -96,22 +121,6 @@ class TimetableNode:
         day, interval, space, prof, activity = self.chosen_assignment
         self.days[day][interval][space] = (prof, activity)
 
-    def compute_number_of_accepted_activities_per_place(self, place):
-        '''Returns the number of accepted activities per place'''
-        number = 0
-        for activity in self.constraints[SALI][place][MATERII]:
-            number += 1
-
-        return number
-    
-    def number_of_places_accepting_activity(self, activity):
-        '''Returns the number of places accepting the activity'''
-        number = 0
-        for place in self.constraints[SALI]:
-            if activity in self.constraints[SALI][place][MATERII]:
-                number += 1
-
-        return number
         
     def eval_node(self):
         '''Returns the evaluation of the current node for hill climbing with adjusted weights and penalties.'''
@@ -153,7 +162,7 @@ class TimetableNode:
         return number
     
     def number_of_constrains_violated(self, day_name, interval_tuple, prof, number):
-        prof_constraints = self.constraints[PROFESORI][prof][CONSTRANGERI]
+        prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]
             
         for interval_constraint in prof_constraints:
             if "!" in interval_constraint:
@@ -171,15 +180,13 @@ class TimetableNode:
         return number
 
     
-
     def clone(self):
         '''Creates a deep copy of this TimetableNode'''
         # Deep copy ensures that all dicts and lists are new objects
-        new_constraints = copy.deepcopy(self.constraints)
         new_students_per_activity = copy.deepcopy(self.students_per_activity)
         new_days = copy.deepcopy(self.days)
         new_professors = copy.deepcopy(self.professors)
         new_chosen_assignment = copy.deepcopy(self.chosen_assignment)
         
         # Create a new instance of TimetableNode with the copied data
-        return TimetableNode(new_constraints, new_students_per_activity, new_days, new_professors, new_chosen_assignment)
+        return TimetableNode(self.constraints_manager, new_students_per_activity, new_days, new_professors, new_chosen_assignment)

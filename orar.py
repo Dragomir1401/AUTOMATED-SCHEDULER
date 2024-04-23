@@ -1,5 +1,5 @@
 import os
-from structs import TimetableNode
+from structs import TimetableNode, ConstraintManager
 from hillClimbing import RandomRestartHillClimbing
 from utils import *
 MAX_HC_ITERATIONS = 1000
@@ -64,7 +64,8 @@ def __init__():
     profs = create_professors_dict(yaml_dict)
 
     # Create the initial node
-    initial_node = TimetableNode(yaml_dict, yaml_dict[MATERII], days, profs)
+    constraints_manager = ConstraintManager(yaml_dict)
+    initial_node = TimetableNode(constraints_manager, yaml_dict[MATERII], days, profs)
 
     if algorithm == 'hc':
         print("Hill Climbing...")

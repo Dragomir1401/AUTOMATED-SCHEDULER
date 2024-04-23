@@ -35,13 +35,15 @@ class TimetableNode:
                  students_per_activity: dict[str, int],
                  days: dict[str, dict[str, dict[str, (str, str)]]],
                  professors : dict[str, int],
-                 chosen_assignment = None):
+                 chosen_assignment = None,
+                 g = 0):
         '''Constructor for the TimetableNode class'''
         self.constraints_manager = constraints_manager
         self.students_per_activity = students_per_activity
         self.days = days
         self.professors = professors
         self.chosen_assignment = chosen_assignment
+        self.g = g
 
     def get_next_states(self):
         '''Returns a list of next states for the current node with added randomness for diversity.'''
@@ -71,7 +73,6 @@ class TimetableNode:
         # Then sort activities by the number of places accepting the activity
         sorted_activities = sorted(sorted_activities,
                                    key=lambda act: self.constraints_manager.number_of_places_accepting_activity(act))
-        
 
         for activity in sorted_activities:
             if self.students_per_activity[activity] > 0:
@@ -137,7 +138,21 @@ class TimetableNode:
             constraint_penalty = soft_violations * 100000
 
         return student_penalty + constraint_penalty
-
+    
+    def astar_heuristic(self):
+        '''Returns the heuristic for A* search'''
+        remaining_students = self.get_remaining_students()
+        return remaining_students
+    
+    def total_cost(self):
+        return self.g + self.astar_heuristic()
+    
+    def __lt__(self, other):
+        # Custom comparison for heapq
+        # First compare based on total cost, then by other criteria
+        if self.total_cost() == other.total_cost():
+            # Secondary criteria
+            return self.get_remaining_students() < other.get_remaining_students()
 
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''

@@ -1,6 +1,6 @@
 import os
 from structs import TimetableNode, ConstraintManager
-from hillClimbing import RandomRestartHillClimbing
+from algorithms import RandomRestartHillClimbing, AStarSearch
 from utils import *
 MAX_HC_ITERATIONS = 1000
 MAX_RESTARTS = 30
@@ -72,6 +72,11 @@ def __init__():
         hill_climbing = RandomRestartHillClimbing(MAX_RESTARTS, MAX_HC_ITERATIONS, initial_node)
         result, total_iterations = hill_climbing.random_restart_hill_climbing()
         print(f"Total iterations: {total_iterations}")
+        write_result_to_file(result, input_dir, output_dir, filename)
+    elif algorithm == 'astar':
+        print("A*...")
+        astar = AStarSearch(initial_node)
+        result = astar.search()
         write_result_to_file(result, input_dir, output_dir, filename)
     else:
         print("Algorithm not implemented")

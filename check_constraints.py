@@ -13,7 +13,6 @@ SALI = 'Sali'
 CAPACITATE = 'Capacitate'
 CONSTRANGERI = 'Constrangeri'
 
-
 #################### FUNCTII AUXILIARE ####################
 def parse_interval(interval : str):
     '''

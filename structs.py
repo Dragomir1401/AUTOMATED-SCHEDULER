@@ -18,61 +18,32 @@ class TimetableNode:
         self.professors = professors
         self.chosen_assignment = chosen_assignment
 
-    def randomize(self):
-        '''Randomly shuffles days and intervals for initial state'''
-        day_list = list(self.days.keys())
-        random.shuffle(day_list)
-        for day in day_list:
-            intervals = list(self.days[day].keys())
-            random.shuffle(intervals)
-            for interval in intervals:
-                spaces = list(self.days[day][interval].keys())
-                random.shuffle(spaces)
-                for space in spaces:
-                    if self.days[day][interval][space] is None:
-                        # Assign a random activity and professor
-                        possible_activities = list(self.students_per_activity.keys())
-                        activity = random.choice(possible_activities)
-                        possible_professors = list(self.professors.keys())
-                        professor = random.choice(possible_professors)
-                        self.days[day][interval][space] = (professor, activity)
-                        return
-
     def get_next_states(self):
         '''Returns a list of next states for the current node'''
         next_states = []
-        unassigned_places = [
-            (day, interval, place)
-            for day, intervals in self.days.items()
-            for interval, assignments in intervals.items()
-            for place, assignment in assignments.items()
-            if assignment is None
-        ]
-        random.shuffle(unassigned_places)
-
-        for day, interval, place in unassigned_places:
-            next_states += self.apply_constraints_on_possible_states(day, interval, place)
-
+        for day_name, intervals in self.days.items():
+            for interval_tuple, assignments in intervals.items():
+                # Sort assignments by places with least activities accepted
+                sorted_assignments = sorted(assignments.items(), key=lambda x: self.compute_number_of_accepted_activities_per_place(x[0]))
+                for place, assigment in sorted_assignments:
+                    if assigment == None:
+                        next_states += self.apply_constraints_on_possible_states(day_name, interval_tuple, place)
         return next_states
     
     def apply_constraints_on_possible_states(self, day_name, interval_tuple, place):
         '''Returns a list of possible states for the current node'''
         possible_states = []
+        
+        # Sort activities by the number of students needing assignment
+        sorted_activities = sorted(self.constraints[SALI][place][MATERII],
+                                   key=lambda act: -self.students_per_activity[act])
 
-        # Start with classrooms because they eliminate the most possibilities
-        # MS, AD, IA, PCOM, etc
-        for activity in self.constraints[SALI][place][MATERII]:
-            # If we still have students to assign to this activity
-            # 100 students, 50 students, etc
+        for activity in sorted_activities:
             if self.students_per_activity[activity] > 0:
-                # For each prof, check if the constraints are met
-                # prof, constraint
                 for prof, prof_constraints in self.constraints[PROFESORI].items():
                     if self.check_constraint(prof_constraints, day_name, interval_tuple, activity, prof):
-                        # Make a list with all parameters for the new state
-                        # day, interval, classroom, prof, activity, capacity
-                        capacitites = self.constraints[SALI][place][CAPACITATE]
-                        parameters = (day_name, interval_tuple, place, prof, activity, capacitites)
+                        capacities = self.constraints[SALI][place][CAPACITATE]
+                        parameters = (day_name, interval_tuple, place, prof, activity, capacities)
                         new_spot = self.choose_interval(parameters)
                         possible_states.append(new_spot)
 
@@ -96,6 +67,16 @@ class TimetableNode:
             
         return True
     
+    def find_empty_spaces(self):
+        '''Returns a list of empty spaces in the timetable'''
+        empty_spaces = []
+        for day_name, intervals in self.days.items():
+            for interval_tuple, assignments in intervals.items():
+                for place, assignment in assignments.items():
+                    if assignment == None:
+                        empty_spaces.append((day_name, interval_tuple, place))
+        return empty_spaces
+    
     def choose_interval(self, parameters):
         '''Returns a new node with the assignment chosen'''
         day_name, interval_tuple, space, prof, activity, capacity = parameters
@@ -114,12 +95,20 @@ class TimetableNode:
         '''Applies the best assignment on the current node'''
         day, interval, space, prof, activity = self.chosen_assignment
         self.days[day][interval][space] = (prof, activity)
+
+    def compute_number_of_accepted_activities_per_place(self, place):
+        '''Returns the number of accepted activities per place'''
+        number = 0
+        for activity in self.constraints[SALI][place][MATERII]:
+            number += 1
+
+        return number
         
     def eval_node(self):
         '''Returns the evaluation of the current node for hill climbing'''
-        remaining_students = self.get_remaining_students()
-        penalty = self.number_of_soft_restrictions_violated() * 100000000
-        return remaining_students * 10000 + penalty  # Emphasize on assigning all students
+        remaining_students = self.get_remaining_students() * 67
+        penalty = self.number_of_soft_restrictions_violated() * 2000
+        return remaining_students + penalty
 
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''

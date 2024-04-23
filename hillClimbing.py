@@ -1,4 +1,5 @@
 from random import choice, seed
+import random
 from structs import TimetableNode
 
 class RandomRestartHillClimbing:
@@ -9,6 +10,7 @@ class RandomRestartHillClimbing:
         self.max_iterations = max_iterations
         self.initial_state = initial_state
         self.init_state_base = initial_state.clone()
+        self.seed = 42
 
     def random_restart_hill_climbing(self):
         '''Driver function for the random restart hill climbing algorithm'''
@@ -18,23 +20,22 @@ class RandomRestartHillClimbing:
         number_of_restarts = 0
 
         for _ in range(self.max_restarts):
-            current_state = self.initial_state.clone()  # Ensure we start with a fresh state
+            current_state = self.init_state_base.clone()  # Ensure we start with a fresh state
             iterations, solution = self.hill_climbing(current_state)
 
             total_iterations += iterations
-            current_evaluation = solution.get_remaining_students()
+            current_evaluation = solution.eval_node()
             
-            if current_evaluation == 0:
-                return solution, total_iterations
+            if solution.eval_node() == 0:
+                best_solution = solution
+                break
 
             if current_evaluation < best_evaluation:
                 best_evaluation = current_evaluation
                 best_solution = solution
             
-            # Prepare the next initial state for a new restart
-            self.initial_state = self.init_state_base.clone()
             number_of_restarts += 1
-
+        
         print(f"Number of students not assigned: {best_solution.get_remaining_students()}")
         print(f"Number of restarts: {number_of_restarts}")
         return best_solution, total_iterations
@@ -53,11 +54,13 @@ class RandomRestartHillClimbing:
                 break
             
             if iterations == 1:
-                best_neighbor = choice(neighbors)
+                random.seed(self.seed)
+                random.shuffle(neighbors)
+                best_neighbor = neighbors[0]
             else:
                 best_neighbor = min(neighbors, key=lambda x: x.eval_node())
 
-            if best_neighbor.eval_node() >= current_state.eval_node():
+            if best_neighbor.get_remaining_students() >= current_state.get_remaining_students():
                 break
 
             current_state = best_neighbor

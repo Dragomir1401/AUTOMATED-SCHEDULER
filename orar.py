@@ -2,8 +2,8 @@ import os
 from structs import TimetableNode
 from hillClimbing import RandomRestartHillClimbing
 from utils import *
-MAX_HC_ITERATIONS = 100
-MAX_RESTARTS = 30
+MAX_HC_ITERATIONS = 1000
+MAX_RESTARTS = 20
 
 def create_days_dict(yaml_dict):
     '''Creates the days dictionary from the yaml dictionary'''

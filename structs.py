@@ -37,6 +37,10 @@ class TimetableNode:
         # Sort activities by the number of students needing assignment
         sorted_activities = sorted(self.constraints[SALI][place][MATERII],
                                    key=lambda act: -self.students_per_activity[act])
+        
+        # Then sort activities by the number of places accepting the activity
+        sorted_activities = sorted(sorted_activities,
+                                   key=lambda act: self.number_of_places_accepting_activity(act))
 
         for activity in sorted_activities:
             if self.students_per_activity[activity] > 0:
@@ -67,16 +71,6 @@ class TimetableNode:
             
         return True
     
-    def find_empty_spaces(self):
-        '''Returns a list of empty spaces in the timetable'''
-        empty_spaces = []
-        for day_name, intervals in self.days.items():
-            for interval_tuple, assignments in intervals.items():
-                for place, assignment in assignments.items():
-                    if assignment == None:
-                        empty_spaces.append((day_name, interval_tuple, place))
-        return empty_spaces
-    
     def choose_interval(self, parameters):
         '''Returns a new node with the assignment chosen'''
         day_name, interval_tuple, space, prof, activity, capacity = parameters
@@ -103,10 +97,19 @@ class TimetableNode:
             number += 1
 
         return number
+    
+    def number_of_places_accepting_activity(self, activity):
+        '''Returns the number of places accepting the activity'''
+        number = 0
+        for place in self.constraints[SALI]:
+            if activity in self.constraints[SALI][place][MATERII]:
+                number += 1
+
+        return number
         
     def eval_node(self):
         '''Returns the evaluation of the current node for hill climbing'''
-        remaining_students = self.get_remaining_students() * 67
+        remaining_students = self.get_remaining_students() * 70
         penalty = self.number_of_soft_restrictions_violated() * 2000
         return remaining_students + penalty
 

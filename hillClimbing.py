@@ -10,7 +10,7 @@ class RandomRestartHillClimbing:
         self.max_iterations = max_iterations
         self.initial_state = initial_state
         self.init_state_base = initial_state.clone()
-        self.seed = 42
+        self.seeds = [42, 69, 420, 666, 1337, 9001, 80085, 8008135, 80081355, 800813555]
 
     def random_restart_hill_climbing(self):
         '''Driver function for the random restart hill climbing algorithm'''
@@ -25,14 +25,13 @@ class RandomRestartHillClimbing:
 
             total_iterations += iterations
             current_evaluation = solution.eval_node()
-            
-            if solution.eval_node() == 0:
-                best_solution = solution
-                break
 
-            if current_evaluation < best_evaluation:
+            if current_evaluation <= best_evaluation:
                 best_evaluation = current_evaluation
                 best_solution = solution
+            
+            if solution.eval_node() == 0:
+                break
             
             number_of_restarts += 1
         
@@ -54,8 +53,11 @@ class RandomRestartHillClimbing:
                 break
             
             if iterations == 1:
-                random.seed(self.seed)
+                seed = choice(self.seeds)
+                random.seed(seed)
+                print("First iteration with seed: ", seed)
                 random.shuffle(neighbors)
+                random.shuffle(self.seeds)
                 best_neighbor = neighbors[0]
             else:
                 best_neighbor = min(neighbors, key=lambda x: x.eval_node())

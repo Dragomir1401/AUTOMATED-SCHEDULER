@@ -19,15 +19,20 @@ class TimetableNode:
         self.chosen_assignment = chosen_assignment
 
     def get_next_states(self):
-        '''Returns a list of next states for the current node'''
+        '''Returns a list of next states for the current node with added randomness for diversity.'''
         next_states = []
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
-                # Sort assignments by places with least activities accepted
                 sorted_assignments = sorted(assignments.items(), key=lambda x: self.compute_number_of_accepted_activities_per_place(x[0]))
-                for place, assigment in sorted_assignments:
-                    if assigment == None:
-                        next_states += self.apply_constraints_on_possible_states(day_name, interval_tuple, place)
+                random.shuffle(sorted_assignments)  # Shuffle to introduce randomness
+                for place, assignment in sorted_assignments:
+                    if assignment == None:
+                        possible_states = self.apply_constraints_on_possible_states(day_name, interval_tuple, place)
+                        next_states.extend(possible_states)
+                        # Introduce a random selection element
+                        if random.random() < 0.1 and possible_states:  # 10% chance to break the pattern
+                            random_choice = random.choice(possible_states)
+                            next_states.append(random_choice)
         return next_states
     
     def apply_constraints_on_possible_states(self, day_name, interval_tuple, place):
@@ -41,6 +46,7 @@ class TimetableNode:
         # Then sort activities by the number of places accepting the activity
         sorted_activities = sorted(sorted_activities,
                                    key=lambda act: self.number_of_places_accepting_activity(act))
+        
 
         for activity in sorted_activities:
             if self.students_per_activity[activity] > 0:
@@ -108,10 +114,21 @@ class TimetableNode:
         return number
         
     def eval_node(self):
-        '''Returns the evaluation of the current node for hill climbing'''
-        remaining_students = self.get_remaining_students() * 70
-        penalty = self.number_of_soft_restrictions_violated() * 2000
-        return remaining_students + penalty
+        '''Returns the evaluation of the current node for hill climbing with adjusted weights and penalties.'''
+        remaining_students = self.get_remaining_students()
+        soft_violations = self.number_of_soft_restrictions_violated()
+
+        # Using exponential penalties for remaining students to ensure it's a priority
+        student_penalty = (remaining_students ** 2) * 50
+
+        # Dynamically adjust weights based on the current state
+        if remaining_students < remaining_students / 5:  # Assuming total students are much higher, adjust this threshold as needed
+            constraint_penalty = soft_violations * 300000  # Increase penalty as we get closer to assigning all students
+        else:
+            constraint_penalty = soft_violations * 100000
+
+        return student_penalty + constraint_penalty
+
 
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''

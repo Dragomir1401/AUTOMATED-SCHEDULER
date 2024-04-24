@@ -149,10 +149,13 @@ class TimetableNode:
         return student_penalty + constraint_penalty
     
     def h(self):
-        return self.get_remaining_students()
+        # Adjust the heuristic based on the number of unassigned students
+        remaining_students = self.get_remaining_students()
+        return (remaining_students ** 2) * 50  # Exponential penalty to push for student assignment
 
     def g(self):
-        return self.number_of_soft_restrictions_violated()
+        # Add a dynamic element based on the number of assignments and violations
+        return self.number_of_assignments() + 1000 * self.number_of_soft_restrictions_violated()
 
     def total_cost(self):
         return self.g() + self.h()
@@ -171,7 +174,6 @@ class TimetableNode:
             number += 1
 
         return number
-
     
     def __lt__(self, other):
         # Custom comparison for heapq

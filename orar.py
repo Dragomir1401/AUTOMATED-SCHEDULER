@@ -63,8 +63,13 @@ def __init__():
     # Create the professors dictionary
     profs = create_professors_dict(yaml_dict)
 
+    # Compute number of initial total students
+    total_students = 0
+    for subject in yaml_dict[MATERII]:
+        total_students += yaml_dict[MATERII][subject]
+
     # Create the initial node
-    constraints_manager = ConstraintManager(yaml_dict)
+    constraints_manager = ConstraintManager(yaml_dict, total_students)
     initial_node = TimetableNode(constraints_manager, yaml_dict[MATERII], days, profs)
 
     if algorithm == 'hc':

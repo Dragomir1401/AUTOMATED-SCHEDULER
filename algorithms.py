@@ -32,7 +32,7 @@ class RandomRestartHillClimbing:
                 best_solution = solution
             
             if solution.eval_node() == 0:
-                print("Solution found faster!")
+                print("Solution found faster than programmed restarts!")
                 break
             
             number_of_restarts += 1
@@ -78,19 +78,32 @@ class AStarSearch:
 
     def search(self):
         open_set = []
+        closed_set = set()  # This will store the states that have already been visited
+
         # Initialize the priority queue with the initial state
         heapq.heappush(open_set, (self.initial_state.total_cost(), self.initial_state))
         
         while open_set:
+            print("-------------------")
             current_cost, current_node = heapq.heappop(open_set)
-            
+
             # Check if the current node is the goal state
             if current_node.eval_node() == 0:
                 return current_node
             
+            # Add the current node to the closed set
+            closed_set.add(current_node)
+
             # Generate neighbors (next states)
-            for neighbor in current_node.get_next_states():
-                neighbor.g = current_node.g + 1  # Assuming each step has a cost of 1
-                heapq.heappush(open_set, (neighbor.total_cost(), neighbor))
+            neigbours = current_node.get_next_states()
+
+            print("Searching through " + str(len(neigbours)) + " neighbours")
+            for neighbor in neigbours:
+                if neighbor in closed_set:
+                    continue  # Skip processing this neighbor if it's already in the closed set
+                
+                neighbor.apply_assignment_on_best_node()
+                heapq.heappush(open_set, (neighbor.total_cost(), neighbor.clone()))
         
         return None  # Return None if no solution is found
+

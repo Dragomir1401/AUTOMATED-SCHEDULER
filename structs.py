@@ -5,8 +5,9 @@ from utils import *
 
 class ConstraintManager:
     '''Class that handles constraints shared across all TimetableNodes'''
-    def __init__(self, constraints):
+    def __init__(self, constraints, initial_total_students):
         self.constraints = constraints
+        self.initial_total_students = initial_total_students
 
     @lru_cache(maxsize=None)
     def compute_number_of_accepted_activities_per_place(self, place):
@@ -43,7 +44,6 @@ class TimetableNode:
         self.days = days
         self.professors = professors
         self.chosen_assignment = chosen_assignment
-        self.g = g
 
     def get_next_states(self):
         '''Returns a list of next states for the current node with added randomness for diversity.'''
@@ -88,6 +88,10 @@ class TimetableNode:
     def check_constraint(self, constraints, day_name, interval_tuple, activity, profesor):
         '''Returns True if the constraints are met, False otherwise'''
 
+        # If day is not available
+        if day_name not in self.constraints_manager.constraints[ZILE]:
+            return False
+
         # Profesors can't have more than 7 activities
         if self.professors[profesor] > 6:
             return False
@@ -99,6 +103,11 @@ class TimetableNode:
         # If profesor is already assigned to an activity in the same interval
         for place, assignment in self.days[day_name][interval_tuple].items():
             if assignment and assignment[0] == profesor:
+                return False
+
+        # If room is already used in that interval
+        for place, assignment in self.days[day_name][interval_tuple].items():
+            if assignment and assignment[1] == activity:
                 return False
             
         return True
@@ -139,20 +148,37 @@ class TimetableNode:
 
         return student_penalty + constraint_penalty
     
-    def astar_heuristic(self):
-        '''Returns the heuristic for A* search'''
-        remaining_students = self.get_remaining_students()
-        return remaining_students
-    
+    def h(self):
+        return self.get_remaining_students()
+
+    def g(self):
+        return self.number_of_soft_restrictions_violated()
+
     def total_cost(self):
-        return self.g + self.astar_heuristic()
+        return self.g() + self.h()
+
+    def number_of_assignments(self):
+        '''Returns the number of assignments in the current node'''
+        number = 0
+        for day_name, intervals in self.days.items():
+            for interval_tuple, assignments in intervals.items():
+                for place, assignment in assignments.items():
+                    if assignment:
+                        number += 1
+
+        # Make one more step for the chosen assignment
+        if self.chosen_assignment:
+            number += 1
+
+        return number
+
     
     def __lt__(self, other):
         # Custom comparison for heapq
         # First compare based on total cost, then by other criteria
         if self.total_cost() == other.total_cost():
             # Secondary criteria
-            return self.get_remaining_students() < other.get_remaining_students()
+            return self.eval_node() < other.eval_node()
 
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''

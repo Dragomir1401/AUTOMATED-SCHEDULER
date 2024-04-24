@@ -141,7 +141,7 @@ class TimetableNode:
         student_penalty = (remaining_students ** 2) * 50
 
         # Dynamically adjust weights based on the current state
-        if remaining_students < remaining_students / 5:  # Assuming total students are much higher, adjust this threshold as needed
+        if remaining_students < remaining_students / 5:
             constraint_penalty = soft_violations * 300000  # Increase penalty as we get closer to assigning all students
         else:
             constraint_penalty = soft_violations * 100000
@@ -207,18 +207,23 @@ class TimetableNode:
     def number_of_constrains_violated(self, day_name, interval_tuple, prof, number):
         prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]
             
-        for interval_constraint in prof_constraints:
-            if "!" in interval_constraint:
-                if '-' in interval_constraint:
+        for constraint in prof_constraints:
+            if "!" in constraint:
+                if '-' in constraint:
                     # Break the interval into start and end
-                    start, end = interval_constraint.split('-')
+                    start, end = constraint.split('-')
                     start = start[1:]
                     start = int(start)
                     end = int(end)
                     if start <= interval_tuple[0] <= interval_tuple[1] <= end:
                         number += 1
+                elif '>' in constraint:
+                    pause = int(constraint.split()[2])
+                    # If the interval tuple creates a pause greater than the constraint
+                    if interval_tuple[1] - interval_tuple[0] > pause:
+                        number += 1
                 else:
-                    if day_name in interval_constraint:
+                    if day_name in constraint:
                         number += 1
         return number
 

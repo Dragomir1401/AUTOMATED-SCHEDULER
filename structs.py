@@ -192,25 +192,31 @@ class TimetableNode:
     def number_of_soft_restrictions_violated(self):
         '''Returns the number of soft restrictions violated'''
         number = 0
-
+        
+        profs_assignments = {}
+        for prof in self.constraints_manager.constraints[PROFESORI]:
+            for cons in self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]:
+                if "!Pauza" in cons:
+                    profs_assignments = self.find_all_assignments_for_all_profs()
+                    break
+        
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
                 for place, assignment in assignments.items():
                     if assignment:
                         prof = assignment[0]
-                        number = self.number_of_constrains_violated(day_name, interval_tuple, prof, number)
+                        number = self.number_of_constrains_violated(day_name, interval_tuple, prof, number, profs_assignments)
 
         # Make one more step for the chosen assignment
         if self.chosen_assignment:
             prof = self.chosen_assignment[3]
-            number = self.number_of_constrains_violated(self.chosen_assignment[0], self.chosen_assignment[1], prof, number)
+            number = self.number_of_constrains_violated(self.chosen_assignment[0], self.chosen_assignment[1], prof, number, profs_assignments)
 
         return number
     
-    def number_of_constrains_violated(self, day_name, interval_tuple, prof, number):
+    def number_of_constrains_violated(self, day_name, interval_tuple, prof, number, profs_assignments={}):
         prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]
-        prof_assignments = self.find_all_assignments_for_prof(prof)
-        
+
         for constraint in prof_constraints:
             if "!" in constraint:
                 if '-' in constraint:
@@ -225,16 +231,16 @@ class TimetableNode:
                     constraint_pause = int(constraint.split()[2])
                     biggest_pause = 0
                     last_end_of_interval = 8
-                    prof_assignments.append((day_name, interval_tuple))
+                    if prof not in profs_assignments:
+                        profs_assignments[prof] = []
+                    profs_assignments[prof].append((day_name, interval_tuple))
                     for interval in self.constraints_manager.constraints[INTERVALE]:
                         # Make interval from str to tuple
                         interval = interval.split(',')
                         # Strip interval start and end of ()
-                        interval[0] = interval[0][1:]
-                        interval[1] = interval[1][:-1]
-                        interval[0] = int(interval[0])
-                        interval[1] = int(interval[1])
-                        for prof_assignment in prof_assignments:
+                        interval[0] = int(interval[0][1:])
+                        interval[1] = int(interval[1][:-1])
+                        for prof_assignment in profs_assignments[prof]:
                             if interval[0] not in prof_assignment[1]:
                                 pause = interval[1] - last_end_of_interval
                                 if pause > biggest_pause:
@@ -248,15 +254,17 @@ class TimetableNode:
                         number += 1
         return number
 
-    def find_all_assignments_for_prof(self, prof):
+    def find_all_assignments_for_all_profs(self):
         '''Returns all assignments for a professor'''
-        assignments_list = []
+        assignments_dict = {}
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
                 for place, assignment in assignments.items():
-                    if assignment and assignment[0] == prof:
-                        assignments_list.append((day_name, interval_tuple, place, assignment[1]))
-        return assignments_list
+                    if assignment:
+                        if assignment[0] not in assignments_dict:
+                            assignments_dict[assignment[0]] = []
+                        assignments_dict[assignment[0]].append((day_name, interval_tuple))
+        return assignments_dict
     
     def clone(self):
         '''Creates a deep copy of this TimetableNode'''

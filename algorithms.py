@@ -33,6 +33,7 @@ class RandomRestartHillClimbing:
             
             if solution.eval_node() == 0:
                 print("Solution found faster than programmed restarts!")
+                print("Students not assigned per activity: ")
                 print(solution.students_per_activity)
                 break
             
@@ -91,7 +92,7 @@ class AStarSearch:
             print("Current h: " + str(current_node.h()))
 
             if remaining_students == 0:
-                # print students_per_activity
+                print("Students not assigned per activity: ")
                 print(current_node.students_per_activity)
                 return current_node
 

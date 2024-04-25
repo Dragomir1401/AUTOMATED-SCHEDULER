@@ -90,6 +90,8 @@ class AStarSearch:
             print("Current h: " + str(current_node.h()))
 
             if remaining_students == 0:
+                # print students_per_activity
+                print(current_node.students_per_activity)
                 return current_node
 
             closed_set.add(current_node)

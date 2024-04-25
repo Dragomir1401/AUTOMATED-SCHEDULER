@@ -120,6 +120,8 @@ class TimetableNode:
         new_student_per_activity = copy.copy(self.students_per_activity)
         new_professors = copy.copy(self.professors)
         new_student_per_activity[activity] -= capacity
+        if new_student_per_activity[activity] < 0:
+            new_student_per_activity[activity] = 0
         new_professors[prof] += 1
 
         new_node = TimetableNode(self.constraints_manager, new_student_per_activity, self.days, new_professors, assignment)

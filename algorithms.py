@@ -80,23 +80,14 @@ class AStarSearch:
         open_set = []
         closed_set = set()
         heapq.heappush(open_set, (self.initial_state.total_cost(), self.initial_state))
-        
-        best_state = None
-        best_unassigned_students = float('inf')
 
         while open_set:
-            current_cost, current_node = heapq.heappop(open_set)
+            current_node = heapq.heappop(open_set)[1]
             remaining_students = current_node.get_remaining_students()
+            
             print("Remaining students: " + str(remaining_students))
             print("Current g: " + str(current_node.g()))
             print("Current h: " + str(current_node.h()))
-
-            if remaining_students < best_unassigned_students:
-                best_unassigned_students = remaining_students
-                best_state = current_node
-                stall_counter = 0  # Reset the stall counter when progress is made
-            else:
-                stall_counter += 1
 
             if remaining_students == 0:
                 return current_node
@@ -108,13 +99,9 @@ class AStarSearch:
                 if neighbor in closed_set:
                     continue
 
-                neighbor.apply_assignment_on_best_node()
-                heapq.heappush(open_set, (neighbor.total_cost(), neighbor.clone()))
-
-            # Check for stalling and backtrack if necessary
-            if stall_counter > 50:  # If no progress after 50 iterations, backtrack
-                heapq.heappush(open_set, (best_state.total_cost(), best_state.clone()))
-                stall_counter = 0  # Reset stall counter after backtracking
+                clone = neighbor.clone()
+                clone.apply_assignment_on_best_node()
+                heapq.heappush(open_set, (clone.total_cost(), clone))
 
         return None  # No solution found
 

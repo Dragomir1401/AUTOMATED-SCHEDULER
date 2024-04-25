@@ -150,12 +150,13 @@ class TimetableNode:
     
     def h(self):
         # Adjust the heuristic based on the number of unassigned students
+        # Exponential penalty to push for student assignment
         remaining_students = self.get_remaining_students()
-        return (remaining_students ** 2) * 50  # Exponential penalty to push for student assignment
+        return (remaining_students ** 2) * 50  + 10000 * self.number_of_soft_restrictions_violated()
 
     def g(self):
         # Add a dynamic element based on the number of assignments and violations
-        return self.number_of_assignments() + 1000 * self.number_of_soft_restrictions_violated()
+        return self.number_of_assignments()
 
     def total_cost(self):
         return self.g() + self.h()
@@ -180,7 +181,7 @@ class TimetableNode:
         # First compare based on total cost, then by other criteria
         if self.total_cost() == other.total_cost():
             # Secondary criteria
-            return self.eval_node() < other.eval_node()
+            return self.get_remaining_students() < other.get_remaining_students()
 
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''

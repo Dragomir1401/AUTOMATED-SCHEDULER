@@ -33,6 +33,7 @@ class RandomRestartHillClimbing:
             
             if solution.eval_node() == 0:
                 print("Solution found faster than programmed restarts!")
+                print(solution.students_per_activity)
                 break
             
             number_of_restarts += 1

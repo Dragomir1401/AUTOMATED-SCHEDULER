@@ -209,7 +209,8 @@ class TimetableNode:
     
     def number_of_constrains_violated(self, day_name, interval_tuple, prof, number):
         prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]
-            
+        prof_assignments = self.find_all_assignments_for_prof(prof)
+        
         for constraint in prof_constraints:
             if "!" in constraint:
                 if '-' in constraint:
@@ -221,15 +222,41 @@ class TimetableNode:
                     if start <= interval_tuple[0] <= interval_tuple[1] <= end:
                         number += 1
                 elif '>' in constraint:
-                    pause = int(constraint.split()[2])
-                    # If the interval tuple creates a pause greater than the constraint
-                    if interval_tuple[1] - interval_tuple[0] > pause:
-                        number += 1
+                    constraint_pause = int(constraint.split()[2])
+                    biggest_pause = 0
+                    last_end_of_interval = 8
+                    prof_assignments.append((day_name, interval_tuple))
+                    for interval in self.constraints_manager.constraints[INTERVALE]:
+                        # Make interval from str to tuple
+                        interval = interval.split(',')
+                        # Strip interval start and end of ()
+                        interval[0] = interval[0][1:]
+                        interval[1] = interval[1][:-1]
+                        interval[0] = int(interval[0])
+                        interval[1] = int(interval[1])
+                        for prof_assignment in prof_assignments:
+                            if interval[0] not in prof_assignment[1]:
+                                pause = interval[1] - last_end_of_interval
+                                if pause > biggest_pause:
+                                    biggest_pause = pause
+                            else:
+                                last_end_of_interval = interval[1]
+                        if biggest_pause < constraint_pause:
+                            number += 1
                 else:
                     if day_name in constraint:
                         number += 1
         return number
 
+    def find_all_assignments_for_prof(self, prof):
+        '''Returns all assignments for a professor'''
+        assignments_list = []
+        for day_name, intervals in self.days.items():
+            for interval_tuple, assignments in intervals.items():
+                for place, assignment in assignments.items():
+                    if assignment and assignment[0] == prof:
+                        assignments_list.append((day_name, interval_tuple, place, assignment[1]))
+        return assignments_list
     
     def clone(self):
         '''Creates a deep copy of this TimetableNode'''

@@ -174,14 +174,15 @@ class TimetableNode:
         return student_penalty + constraint_penalty
     
     def h(self):
-        # Adjust the heuristic based on the number of unassigned students
-        # Exponential penalty to push for student assignment
+        # Use a minimal per-student assignment cost as the heuristic estimate
         remaining_students = self.get_remaining_students()
-        return (remaining_students ** 2) * 50  + 10000 * self.number_of_soft_restrictions_violated()
-
+        min_cost_per_student = 50  # This cost should be the minimal possible cost per assignment
+        return remaining_students * min_cost_per_student + 10000 * self.number_of_soft_restrictions_violated()
+    
     def g(self):
-        # Add a dynamic element based on the number of assignments and violations
-        return self.number_of_assignments() * 1000 + 1000 * self.number_of_soft_restrictions_violated()
+        # Cost increases with assignments and violations; both are realistically weighted
+        return self.number_of_assignments() * 50 + 10000 * self.number_of_soft_restrictions_violated()
+
 
     def total_cost(self):
         return self.g() + self.h()

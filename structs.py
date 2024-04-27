@@ -37,13 +37,14 @@ class TimetableNode:
                  days: dict[str, dict[str, dict[str, (str, str)]]],
                  professors : dict[str, int],
                  chosen_assignment = None,
-                 g = 0):
+                 profs_assignments : dict[str, list] = {}):
         '''Constructor for the TimetableNode class'''
         self.constraints_manager = constraints_manager
         self.students_per_activity = students_per_activity
         self.days = days
         self.professors = professors
         self.chosen_assignment = chosen_assignment
+        self.profs_assignments = profs_assignments
 
     def get_next_states(self):
         '''Returns a list of next states for the current node with added randomness for diversity.'''
@@ -51,15 +52,16 @@ class TimetableNode:
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
                 sorted_assignments = sorted(assignments.items(), key=lambda x: self.constraints_manager.compute_number_of_accepted_activities_per_place(x[0]))
-                random.shuffle(sorted_assignments)  # Shuffle to introduce randomness
                 for place, assignment in sorted_assignments:
                     if assignment == None:
                         possible_states = self.apply_constraints_on_possible_states(day_name, interval_tuple, place)
-                        next_states.extend(possible_states)
                         # Introduce a random selection element
                         if random.random() < 0.1 and possible_states:  # 10% chance to break the pattern
                             random_choice = random.choice(possible_states)
                             next_states.append(random_choice)
+                        else:
+                            next_states.extend(possible_states)
+                            
         return next_states
     
     def apply_constraints_on_possible_states(self, day_name, interval_tuple, place):
@@ -132,6 +134,9 @@ class TimetableNode:
         '''Applies the best assignment on the current node'''
         day, interval, space, prof, activity = self.chosen_assignment
         self.days[day][interval][space] = (prof, activity)
+        if prof not in self.profs_assignments:
+            self.profs_assignments[prof] = []
+        self.profs_assignments[prof].append((day, interval))
 
         
     def eval_node(self):
@@ -158,7 +163,7 @@ class TimetableNode:
 
     def g(self):
         # Add a dynamic element based on the number of assignments and violations
-        return self.number_of_assignments()
+        return self.number_of_assignments() * 1000 + 1000 * self.number_of_soft_restrictions_violated()
 
     def total_cost(self):
         return self.g() + self.h()
@@ -184,7 +189,12 @@ class TimetableNode:
         if self.total_cost() == other.total_cost():
             # Secondary criteria
             return self.get_remaining_students() < other.get_remaining_students()
-
+        
+    def __eq__(self, value: object) -> bool:
+        # Custom comparison for heapq
+        # Check if the days dict is the same
+        return self.days == value.days
+    
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''
         return sum(self.students_per_activity.values())
@@ -193,28 +203,21 @@ class TimetableNode:
         '''Returns the number of soft restrictions violated'''
         number = 0
         
-        profs_assignments = {}
-        for prof in self.constraints_manager.constraints[PROFESORI]:
-            for cons in self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]:
-                if "!Pauza" in cons:
-                    profs_assignments = self.find_all_assignments_for_all_profs()
-                    break
-        
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
                 for place, assignment in assignments.items():
                     if assignment:
                         prof = assignment[0]
-                        number = self.number_of_constrains_violated(day_name, interval_tuple, prof, number, profs_assignments)
+                        number = self.number_of_constrains_violated(day_name, interval_tuple, prof, number)
 
         # Make one more step for the chosen assignment
         if self.chosen_assignment:
             prof = self.chosen_assignment[3]
-            number = self.number_of_constrains_violated(self.chosen_assignment[0], self.chosen_assignment[1], prof, number, profs_assignments)
+            number = self.number_of_constrains_violated(self.chosen_assignment[0], self.chosen_assignment[1], prof, number)
 
         return number
     
-    def number_of_constrains_violated(self, day_name, interval_tuple, prof, number, profs_assignments={}):
+    def number_of_constrains_violated(self, day_name, interval_tuple, prof, number):
         prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]
 
         for constraint in prof_constraints:
@@ -231,16 +234,16 @@ class TimetableNode:
                     constraint_pause = int(constraint.split()[2])
                     biggest_pause = 0
                     last_end_of_interval = 8
-                    if prof not in profs_assignments:
-                        profs_assignments[prof] = []
-                    profs_assignments[prof].append((day_name, interval_tuple))
+                    if prof not in self.profs_assignments:
+                        self.profs_assignments[prof] = []
+                    self.profs_assignments[prof].append((day_name, interval_tuple))
                     for interval in self.constraints_manager.constraints[INTERVALE]:
                         # Make interval from str to tuple
                         interval = interval.split(',')
                         # Strip interval start and end of ()
                         interval[0] = int(interval[0][1:])
                         interval[1] = int(interval[1][:-1])
-                        for prof_assignment in profs_assignments[prof]:
+                        for prof_assignment in self.profs_assignments[prof]:
                             if interval[0] not in prof_assignment[1]:
                                 pause = interval[1] - last_end_of_interval
                                 if pause > biggest_pause:
@@ -273,6 +276,11 @@ class TimetableNode:
         new_days = copy.deepcopy(self.days)
         new_professors = copy.deepcopy(self.professors)
         new_chosen_assignment = copy.deepcopy(self.chosen_assignment)
-        
+        new_profs_assignments = copy.deepcopy(self.profs_assignments)
+                
         # Create a new instance of TimetableNode with the copied data
-        return TimetableNode(self.constraints_manager, new_students_per_activity, new_days, new_professors, new_chosen_assignment)
+        return TimetableNode(self.constraints_manager,
+                             new_students_per_activity,
+                             new_days, new_professors, 
+                             new_chosen_assignment,
+                             new_profs_assignments)

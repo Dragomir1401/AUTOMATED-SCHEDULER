@@ -100,8 +100,9 @@ class AStarSearch:
             neighbours = current_node.get_next_states()
 
             for neighbor in neighbours:
-                if neighbor in closed_set:
-                    continue
+                for node in closed_set:
+                    if neighbor.__eq__(node):
+                        continue
 
                 clone = neighbor.clone()
                 clone.apply_assignment_on_best_node()

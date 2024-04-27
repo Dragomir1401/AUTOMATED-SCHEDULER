@@ -221,32 +221,20 @@ class TimetableNode:
         return student_penalty + constraint_penalty
 
     def h(self):
-        # Use a minimal per-student assignment cost as the heuristic estimate
-        remaining_students = self.get_remaining_students()
-        min_cost_per_student = (
-            50  # This cost should be the minimal possible cost per assignment
-        )
-        (
-            number_of_constrains_violated,
-            number_of_pause_constrains_violated,
-        ) = self.number_of_soft_restrictions_violated()
+        # Assuming each remaining student's assignment incurs at least the same penalty as in g
+        min_cost_per_student = 500  # Align this with the sum of costs related to students in g
+        soft_violations, pause_violations = self.number_of_soft_restrictions_violated()
         return (
-            remaining_students * min_cost_per_student
-            + 10000 * number_of_constrains_violated
-            + 100000 * number_of_pause_constrains_violated
+            self.get_remaining_students() * min_cost_per_student
+            + 10000 * soft_violations
+            + 1000 * pause_violations
         )
-
+        
     def g(self):
-        # Cost increases with assignments and violations; both are realistically weighted
-        (
-            number_of_constrains_violated,
-            number_of_pause_constrains_violated,
-        ) = self.number_of_soft_restrictions_violated()
+        soft_violations, pause_violations = self.number_of_soft_restrictions_violated()
         return (
-            self.number_of_assignments() * 50
-            + 10000 * number_of_constrains_violated
-            + 100000 * self.get_remaining_students()
-            + 100000 * number_of_pause_constrains_violated
+            4000 * self.number_of_assignments()
+            # + (self.constraints_manager.get_total_number_of_students() - self.get_remaining_students()) * 500
         )
 
     def total_cost(self):

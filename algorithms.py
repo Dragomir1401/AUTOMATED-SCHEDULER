@@ -89,6 +89,8 @@ class AStarSearch:
         self.initial_state = initial_state
 
     def search(self):
+        explored_nodes = 0
+        expanded_nodes = 0
         open_set = []
         closed_set = set()
         best_so_far = (
@@ -101,6 +103,7 @@ class AStarSearch:
         heapq.heappush(open_set, (self.initial_state.total_cost(), self.initial_state))
 
         while open_set:
+            explored_nodes += 1
             current_cost, current_node = heapq.heappop(open_set)
             remaining_students = current_node.get_remaining_students()
 
@@ -112,6 +115,8 @@ class AStarSearch:
                 print("Solution found!")
                 print("Students not assigned per activity: ")
                 print(current_node.students_per_activity)
+                print(f"Explored nodes: {explored_nodes}")
+                print(f"Expanded nodes: {expanded_nodes}")
                 return current_node
 
             # Check if we have found a new best state
@@ -133,6 +138,7 @@ class AStarSearch:
             neighbours = current_node.get_next_states()
 
             for neighbor in neighbours:
+                expanded_nodes += 1
                 for closed_node in closed_set:
                     if neighbor.__eq__(closed_node):
                         break

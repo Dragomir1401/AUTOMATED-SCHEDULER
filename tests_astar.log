@@ -1,0 +1,360 @@
+-------------------- Results for orar_mic_exact --------------------
+Test 1 for orar_mic_exact:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 35
+Expanded Nodes: 13451
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 2 for orar_mic_exact:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 35
+Expanded Nodes: 14154
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 3 for orar_mic_exact:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 35
+Expanded Nodes: 13243
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 4 for orar_mic_exact:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 35
+Expanded Nodes: 13537
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 5 for orar_mic_exact:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 35
+Expanded Nodes: 13312
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+
+-------------------- Results for orar_mediu_relaxat --------------------
+Test 1 for orar_mediu_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 48
+Expanded Nodes: 88098
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 2 for orar_mediu_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 48
+Expanded Nodes: 89932
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 3 for orar_mediu_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 48
+Expanded Nodes: 88599
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 4 for orar_mediu_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 48
+Expanded Nodes: 87583
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 5 for orar_mediu_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 48
+Expanded Nodes: 89628
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+
+-------------------- Results for orar_mare_relaxat --------------------
+Test 1 for orar_mare_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 52
+Expanded Nodes: 272687
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 2 for orar_mare_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 52
+Expanded Nodes: 272222
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 3 for orar_mare_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 52
+Expanded Nodes: 273779
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 4 for orar_mare_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 52
+Expanded Nodes: 273922
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 5 for orar_mare_relaxat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 52
+Expanded Nodes: 275248
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+
+-------------------- Results for orar_constrans_incalcat --------------------
+Test 1 for orar_constrans_incalcat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 57
+Expanded Nodes: 45039
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 2 for orar_constrans_incalcat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 58
+Expanded Nodes: 44799
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 3 for orar_constrans_incalcat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 138
+Expanded Nodes: 48460
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 4 for orar_constrans_incalcat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 55
+Expanded Nodes: 44423
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 5 for orar_constrans_incalcat:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 58
+Expanded Nodes: 44250
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+
+-------------------- Results for dummy --------------------
+Test 1 for dummy:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 12
+Expanded Nodes: 477
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 2 for dummy:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 12
+Expanded Nodes: 465
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 3 for dummy:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 12
+Expanded Nodes: 483
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 4 for dummy:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 12
+Expanded Nodes: 482
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+Test 5 for dummy:
+A* algorithm output is suppressed.
+
+Students Not Assigned: 0
+Explored Nodes: 12
+Expanded Nodes: 498
+
+Mandatory Violations: 0
+Optional Violations: 0
+
+
+-------------------
+
+
+

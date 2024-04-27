@@ -6,7 +6,6 @@ from utils import *
 MAX_HC_ITERATIONS = 1000
 MAX_RESTARTS = 20
 
-
 def create_days_dict(yaml_dict):
     """Creates the days dictionary from the yaml dictionary"""
     days = {}
@@ -23,6 +22,7 @@ def create_days_dict(yaml_dict):
             interval_start = int(interval_start)
             interval_end = int(interval_end)
 
+            # Create the assignments dictionary
             assignments = {}
             for space in yaml_dict[SALI]:
                 assignments[space] = None
@@ -83,13 +83,17 @@ def __init__():
             MAX_RESTARTS, MAX_HC_ITERATIONS, initial_node
         )
         result, total_iterations = hill_climbing.random_restart_hill_climbing()
+        
         print(f"Total iterations: {total_iterations}")
         write_result_to_file(result, input_dir, output_dir, filename)
+        
     elif algorithm == "astar":
         print("A*...")
         astar = AStarSearch(initial_node)
         result = astar.search()
+        
         write_result_to_file(result, input_dir, output_dir, filename)
+        
     else:
         print("Algorithm not implemented")
 

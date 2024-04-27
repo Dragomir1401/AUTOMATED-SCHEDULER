@@ -16,6 +16,8 @@ def count_pause_violations(imposed_max_pause, prof_assignments):
             last_interval = (6, 8)
             day = prof_assignment[0]
         pause = prof_assignment[1][0] - last_interval[1]
+        
+        # If the pause is bigger than the imposed max pause, add it to the list
         if pause > imposed_max_pause:
             bigger_pauses.append(pause)
         last_interval = prof_assignment[1]
@@ -94,7 +96,8 @@ class TimetableNode:
                         # Introduce a random selection element
                         if (
                             random.random() < 0.1 and possible_states
-                        ):  # 10% chance to break the pattern
+                        ):  
+                            # 10% chance to break the pattern
                             random_choice = random.choice(possible_states)
                             next_states.append(random_choice)
                         else:
@@ -120,6 +123,7 @@ class TimetableNode:
             ),
         )
 
+        # Then take the first activity that is not assigned
         for activity in sorted_activities:
             if self.students_per_activity[activity] > 0:
                 for prof, prof_constraints in self.constraints_manager.constraints[
@@ -181,6 +185,7 @@ class TimetableNode:
         new_student_per_activity = copy.copy(self.students_per_activity)
         new_professors = copy.copy(self.professors)
         new_student_per_activity[activity] -= capacity
+
         if new_student_per_activity[activity] < 0:
             new_student_per_activity[activity] = 0
         new_professors[prof] += 1
@@ -199,6 +204,7 @@ class TimetableNode:
         """Applies the best assignment on the current node"""
         day, interval, space, prof, activity = self.chosen_assignment
         self.days[day][interval][space] = (prof, activity)
+
         if prof not in self.profs_assignments:
             self.profs_assignments[prof] = []
         self.profs_assignments[prof].append((day, interval))
@@ -213,7 +219,7 @@ class TimetableNode:
 
         # Dynamically adjust weights based on the current state
         if remaining_students < remaining_students / 5:
-            # Increase penalty as we get closer to assigning all students
+            # Increase penalty for soft constraints violated as we get closer to assigning all students
             constraint_penalty = soft_violations * 300000 + pause_violations * 1000
         else:
             constraint_penalty = soft_violations * 100000 + pause_violations * 200
@@ -221,8 +227,9 @@ class TimetableNode:
         return student_penalty + constraint_penalty
 
     def h(self):
-        # Assuming each remaining student's assignment incurs at least the same penalty as in g
-        min_cost_per_student = 500  # Align this with the sum of costs related to students in g
+        '''Returns the heuristic value of the current node for A* search with adjusted weights and penalties.'''
+        # Impose a penalty for each student that is not assigned
+        min_cost_per_student = 500
         soft_violations, pause_violations = self.number_of_soft_restrictions_violated()
         return (
             self.get_remaining_students() * min_cost_per_student
@@ -231,13 +238,13 @@ class TimetableNode:
         )
         
     def g(self):
-        soft_violations, pause_violations = self.number_of_soft_restrictions_violated()
+        '''Returns the cost of the current node for A* search with adjusted weights and penalties.'''
         return (
             4000 * self.number_of_assignments()
-            # + (self.constraints_manager.get_total_number_of_students() - self.get_remaining_students()) * 500
         )
 
     def total_cost(self):
+        '''Returns the total cost of the current node for A* search with adjusted weights and penalties.'''
         return self.g() + self.h()
 
     def number_of_assignments(self):
@@ -256,19 +263,19 @@ class TimetableNode:
         return number
 
     def __lt__(self, other):
-        # Custom comparison for heapq
+        '''Custom comparison for heapq'''
         # First compare based on total cost, then by other criteria
         if self.total_cost() == other.total_cost():
             # Secondary criteria
             return self.get_remaining_students() < other.get_remaining_students()
 
     def __eq__(self, value: object) -> bool:
-        # Custom comparison for heapq
+        '''Custom equality for closed set in A* search'''
         # Check if the days dict is the same
         return self.days == value.days
 
     def __hash__(self) -> int:
-        # Custom hash function for heapq
+        """Custom hash function for heapq"""
         return hash(str(self.days))
 
     def get_remaining_students(self):
@@ -276,7 +283,7 @@ class TimetableNode:
         return sum(self.students_per_activity.values())
 
     def number_of_soft_restrictions_violated(self):
-        """Returns the number of soft restrictions violated"""
+        """Returns the number of soft restrictions violated and pause violations for the current node"""
         soft_violated = 0
         pause_violated = 0
 
@@ -303,6 +310,7 @@ class TimetableNode:
         return soft_violated, pause_violated
 
     def number_of_constrains_violated(self, day_name, interval_tuple, prof):
+        '''Returns the number of constraints violated for a professor in a given interval and day'''
         number = 0
         number_of_pause_constrains_violated = 0
         prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][
@@ -315,6 +323,7 @@ class TimetableNode:
 
         for constraint in prof_constraints:
             if "!" in constraint:
+                # Interval not preferred constraint
                 if "-" in constraint:
                     # Break the interval into start and end
                     start, end = constraint.split("-")
@@ -324,31 +333,19 @@ class TimetableNode:
                     if start <= interval_tuple[0] <= interval_tuple[1] <= end:
                         # Smaller cost for a interval constraint
                         number += 1
+                # Pause not preferred constraint
                 elif ">" in constraint:
                     # Sort the assignments by day and interval
                     self.profs_assignments[prof].sort(key=lambda x: (x[0], x[1]))
                     number_of_pause_constrains_violated += count_pause_violations(
                         int(constraint.split()[2]), self.profs_assignments[prof]
                     )
+                # Day not preferred constraint
                 else:
                     if day_name in constraint:
                         # Bigger cost for a day constraint
                         number += 3
         return number, number_of_pause_constrains_violated
-
-    def find_all_assignments_for_all_profs(self):
-        """Returns all assignments for a professor"""
-        assignments_dict = {}
-        for day_name, intervals in self.days.items():
-            for interval_tuple, assignments in intervals.items():
-                for place, assignment in assignments.items():
-                    if assignment:
-                        if assignment[0] not in assignments_dict:
-                            assignments_dict[assignment[0]] = []
-                        assignments_dict[assignment[0]].append(
-                            (day_name, interval_tuple)
-                        )
-        return assignments_dict
 
     def clone(self):
         """Creates a deep copy of this TimetableNode"""

@@ -179,3 +179,250 @@ Not Assigned Students: 0
 Average run time for dummy: 0.07 seconds
 
 -------------------- Results for orar_mediu_relaxat --------------------
+Elapsed time for test 1 on orar_mediu_relaxat: 55.45 seconds
+Hill Climbing...
+First iteration with seed:  420
+First iteration with seed:  42
+First iteration with seed:  8008135
+First iteration with seed:  80081355
+First iteration with seed:  42
+First iteration with seed:  8008135
+First iteration with seed:  42
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'MS': 0, 'PL': 0, 'SOC': 0}
+Number of students not assigned: 0
+Number of restarts: 6
+Total iterations: 339
+
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_mediu_relaxat: 10.08 seconds
+Hill Climbing...
+First iteration with seed:  420
+First iteration with seed:  80081355
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'MS': 0, 'PL': 0, 'SOC': 0}
+Number of students not assigned: 0
+Number of restarts: 1
+Total iterations: 97
+
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_mediu_relaxat: 9.37 seconds
+Hill Climbing...
+First iteration with seed:  9001
+First iteration with seed:  69
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'MS': 0, 'PL': 0, 'SOC': 0}
+Number of students not assigned: 0
+Number of restarts: 1
+Total iterations: 97
+
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_mediu_relaxat: 4.23 seconds
+Hill Climbing...
+First iteration with seed:  69
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'MS': 0, 'PL': 0, 'SOC': 0}
+Number of students not assigned: 0
+Number of restarts: 0
+Total iterations: 49
+
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_mediu_relaxat: 9.47 seconds
+Hill Climbing...
+First iteration with seed:  80081355
+First iteration with seed:  1337
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'MS': 0, 'PL': 0, 'SOC': 0}
+Number of students not assigned: 0
+Number of restarts: 1
+Total iterations: 98
+
+Not Assigned Students: 0
+
+Average run time for orar_mediu_relaxat: 17.72 seconds
+
+-------------------- Results for orar_mare_relaxat --------------------
+Elapsed time for test 1 on orar_mare_relaxat: 51.42 seconds
+Hill Climbing...
+First iteration with seed:  80081355
+First iteration with seed:  8008135
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'ASC': 0, 'IA': 0, 'MS': 0, 'PCom': 0, 'PL': 0, 'PP': 0, 'PM': 0}
+Number of students not assigned: 0
+Number of restarts: 1
+Total iterations: 105
+
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_mare_relaxat: 21.50 seconds
+Hill Climbing...
+First iteration with seed:  80081355
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'ASC': 0, 'IA': 0, 'MS': 0, 'PCom': 0, 'PL': 0, 'PP': 0, 'PM': 0}
+Number of students not assigned: 0
+Number of restarts: 0
+Total iterations: 53
+
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_mare_relaxat: 374.40 seconds
+Hill Climbing...
+First iteration with seed:  69
+First iteration with seed:  42
+First iteration with seed:  80081355
+First iteration with seed:  420
+First iteration with seed:  666
+First iteration with seed:  1337
+First iteration with seed:  9001
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'ASC': 0, 'IA': 0, 'MS': 0, 'PCom': 0, 'PL': 0, 'PP': 0, 'PM': 0}
+Number of students not assigned: 0
+Number of restarts: 6
+Total iterations: 367
+
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_mare_relaxat: 138.64 seconds
+Hill Climbing...
+First iteration with seed:  8008135
+First iteration with seed:  42
+First iteration with seed:  666
+First iteration with seed:  9001
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'ASC': 0, 'IA': 0, 'MS': 0, 'PCom': 0, 'PL': 0, 'PP': 0, 'PM': 0}
+Number of students not assigned: 0
+Number of restarts: 3
+Total iterations: 208
+
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_mare_relaxat: 95.02 seconds
+Hill Climbing...
+First iteration with seed:  9001
+First iteration with seed:  69
+First iteration with seed:  69
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'AA': 0, 'ASC': 0, 'IA': 0, 'MS': 0, 'PCom': 0, 'PL': 0, 'PP': 0, 'PM': 0}
+Number of students not assigned: 0
+Number of restarts: 2
+Total iterations: 157
+
+Not Assigned Students: 0
+
+Average run time for orar_mare_relaxat: 136.20 seconds
+
+-------------------- Results for orar_constrans_incalcat --------------------
+Elapsed time for test 1 on orar_constrans_incalcat: 92.29 seconds
+Hill Climbing...
+First iteration with seed:  42
+First iteration with seed:  666
+First iteration with seed:  8008135
+First iteration with seed:  42
+First iteration with seed:  69
+First iteration with seed:  1337
+First iteration with seed:  800813555
+First iteration with seed:  80081355
+First iteration with seed:  666
+First iteration with seed:  80081355
+First iteration with seed:  8008135
+First iteration with seed:  80081355
+First iteration with seed:  69
+First iteration with seed:  666
+First iteration with seed:  420
+First iteration with seed:  80085
+First iteration with seed:  420
+First iteration with seed:  69
+First iteration with seed:  420
+First iteration with seed:  80085
+Number of students not assigned: 0
+Number of restarts: 20
+Total iterations: 1100
+
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_constrans_incalcat: 45.42 seconds
+Hill Climbing...
+First iteration with seed:  9001
+First iteration with seed:  666
+First iteration with seed:  8008135
+First iteration with seed:  80081355
+First iteration with seed:  1337
+First iteration with seed:  800813555
+First iteration with seed:  9001
+First iteration with seed:  1337
+First iteration with seed:  9001
+First iteration with seed:  80085
+First iteration with seed:  80081355
+First iteration with seed:  1337
+First iteration with seed:  800813555
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'DS': 0, 'PCom': 0, 'PM': 0, 'SO': 0}
+Number of students not assigned: 0
+Number of restarts: 12
+Total iterations: 715
+
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_constrans_incalcat: 7.20 seconds
+Hill Climbing...
+First iteration with seed:  1337
+First iteration with seed:  9001
+First iteration with seed:  42
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'DS': 0, 'PCom': 0, 'PM': 0, 'SO': 0}
+Number of students not assigned: 0
+Number of restarts: 2
+Total iterations: 165
+
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_constrans_incalcat: 6.27 seconds
+Hill Climbing...
+First iteration with seed:  42
+First iteration with seed:  420
+First iteration with seed:  800813555
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'DS': 0, 'PCom': 0, 'PM': 0, 'SO': 0}
+Number of students not assigned: 0
+Number of restarts: 2
+Total iterations: 165
+
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_constrans_incalcat: 20.24 seconds
+Hill Climbing...
+First iteration with seed:  420
+First iteration with seed:  80085
+First iteration with seed:  1337
+First iteration with seed:  420
+First iteration with seed:  800813555
+First iteration with seed:  8008135
+First iteration with seed:  1337
+Solution found faster than programmed restarts!
+Students not assigned per activity: 
+{'DS': 0, 'PCom': 0, 'PM': 0, 'SO': 0}
+Number of students not assigned: 0
+Number of restarts: 6
+Total iterations: 385
+
+Not Assigned Students: 0
+
+Average run time for orar_constrans_incalcat: 34.28 seconds
+

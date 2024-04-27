@@ -93,12 +93,16 @@ class AStarSearch:
         expanded_nodes = 0
         open_set = []
         closed_set = set()
+        
+        # Store the state with the least remaining students
         best_so_far = (
             float("inf"),
             None,
-        )  # Store the state with the least remaining students
-        stagnation_counter = 0  # Count how many times the state hasn't improved
-        max_stagnation = 25  # Set a limit for stagnation before backtracking
+        )
+        
+        # Count how many times the state hasn't improved
+        stagnation_counter = 0
+        max_stagnation = 25
 
         heapq.heappush(open_set, (self.initial_state.total_cost(), self.initial_state))
 
@@ -122,7 +126,7 @@ class AStarSearch:
             # Check if we have found a new best state
             if remaining_students < best_so_far[0]:
                 best_so_far = (remaining_students, current_node)
-                stagnation_counter = 0  # Reset stagnation counter
+                stagnation_counter = 0
             else:
                 stagnation_counter += 1
 
@@ -132,7 +136,7 @@ class AStarSearch:
                     "Stagnation detected. Backtracking to best state so far with fewer remaining students."
                 )
                 current_node = best_so_far[1]
-                stagnation_counter = 0  # Reset counter after backtracking
+                stagnation_counter = 0
 
             closed_set.add(current_node)
             neighbours = current_node.get_next_states()
@@ -148,4 +152,4 @@ class AStarSearch:
                 heapq.heappush(open_set, (clone.total_cost(), clone))
 
         print("No solution found")
-        return None  # No solution found
+        return None

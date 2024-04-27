@@ -3,7 +3,7 @@ import re
 
 
 def run_test(test_type, run_number, algorithm="hc"):
-    # Run the hill climbing algorithm on the test type
+    # Run the algorithm on the test type
     hc_command = f"time python orar.py {algorithm} {test_type}"
     process = subprocess.run(
         hc_command,
@@ -33,7 +33,7 @@ def run_test(test_type, run_number, algorithm="hc"):
     mandatory_count = int(mandatory_violations.group(1)) if mandatory_violations else 0
     optional_count = int(optional_violations.group(1)) if optional_violations else 0
 
-    # Additional metrics to capture
+    # Additional metrics to output in the end
     not_assigned = re.search(r"Number of students not assigned: (\d+)", output)
     restarts = re.search(r"Number of restarts: (\d+)", output)
     iterations = re.search(r"Total iterations: (\d+)", output)
@@ -46,7 +46,6 @@ def run_test(test_type, run_number, algorithm="hc"):
     explored_nodes_count = int(explored_nodes.group(1)) if explored_nodes else 0
     expanded_nodes_count = int(expanded_nodes.group(1)) if expanded_nodes else 0
 
-    # Structure to include additional details
     if algorithm == "astar":
         # Clear output for A* algorithm
         output = "A* algorithm output is suppressed."
@@ -79,7 +78,7 @@ def log_results(results, test_types):
                 file.write(
                     f"{result[0]}\nMandatory Violations: {result[1]}\nOptional Violations: {result[2]}\n\n\n-------------------\n\n\n"
                 )
-            file.write("\n")  # Add extra newline for spacing between test types
+            file.write("\n")
 
 
 MIC = "orar_mic_exact"

@@ -3,6 +3,24 @@ from functools import lru_cache
 import random
 from utils import *
 
+
+def count_pause_violations(imposed_max_pause, prof_assignments):
+    '''Returns the number of pause violations for a professor. The prof_assignments list should be sorted by day and interval.'''
+    last_interval = (6, 8)
+    bigger_pauses = []
+    day = prof_assignments[0][0]
+    
+    for prof_assignment in prof_assignments:
+        # If day changed, reset last interval
+        if prof_assignment[0] != day:
+            last_interval = (6, 8)
+            day = prof_assignment[0]
+        pause = prof_assignment[1][0] - last_interval[1]
+        if pause > imposed_max_pause:
+            bigger_pauses.append(pause)
+        last_interval = prof_assignment[1]
+            
+    return len(bigger_pauses)
 class ConstraintManager:
     '''Class that handles constraints shared across all TimetableNodes'''
     def __init__(self, constraints, initial_total_students):
@@ -195,6 +213,10 @@ class TimetableNode:
         # Check if the days dict is the same
         return self.days == value.days
     
+    def __hash__(self) -> int:
+        # Custom hash function for heapq
+        return hash(str(self.days))
+    
     def get_remaining_students(self):
         '''Returns the number of remaining students to be assigned'''
         return sum(self.students_per_activity.values())
@@ -208,18 +230,23 @@ class TimetableNode:
                 for place, assignment in assignments.items():
                     if assignment:
                         prof = assignment[0]
-                        number = self.number_of_constrains_violated(day_name, interval_tuple, prof, number)
+                        number += self.number_of_constrains_violated(day_name, interval_tuple, prof)
 
         # Make one more step for the chosen assignment
         if self.chosen_assignment:
             prof = self.chosen_assignment[3]
-            number = self.number_of_constrains_violated(self.chosen_assignment[0], self.chosen_assignment[1], prof, number)
+            number += self.number_of_constrains_violated(self.chosen_assignment[0], self.chosen_assignment[1], prof)
 
         return number
     
-    def number_of_constrains_violated(self, day_name, interval_tuple, prof, number):
+    def number_of_constrains_violated(self, day_name, interval_tuple, prof):
+        number = 0
         prof_constraints = self.constraints_manager.constraints[PROFESORI][prof][CONSTRANGERI]
-
+        
+        if prof not in self.profs_assignments:
+            self.profs_assignments[prof] = []
+        self.profs_assignments[prof].append((day_name, interval_tuple))
+        
         for constraint in prof_constraints:
             if "!" in constraint:
                 if '-' in constraint:
@@ -229,32 +256,16 @@ class TimetableNode:
                     start = int(start)
                     end = int(end)
                     if start <= interval_tuple[0] <= interval_tuple[1] <= end:
+                        # Smaller cost for a interval constraint
                         number += 1
                 elif '>' in constraint:
-                    constraint_pause = int(constraint.split()[2])
-                    biggest_pause = 0
-                    last_end_of_interval = 8
-                    if prof not in self.profs_assignments:
-                        self.profs_assignments[prof] = []
-                    self.profs_assignments[prof].append((day_name, interval_tuple))
-                    for interval in self.constraints_manager.constraints[INTERVALE]:
-                        # Make interval from str to tuple
-                        interval = interval.split(',')
-                        # Strip interval start and end of ()
-                        interval[0] = int(interval[0][1:])
-                        interval[1] = int(interval[1][:-1])
-                        for prof_assignment in self.profs_assignments[prof]:
-                            if interval[0] not in prof_assignment[1]:
-                                pause = interval[1] - last_end_of_interval
-                                if pause > biggest_pause:
-                                    biggest_pause = pause
-                            else:
-                                last_end_of_interval = interval[1]
-                        if biggest_pause < constraint_pause:
-                            number += 1
+                    # Sort the assignments by day and interval
+                    self.profs_assignments[prof].sort(key=lambda x: (x[0], x[1]))
+                    number += count_pause_violations(int(constraint.split()[2]), self.profs_assignments[prof])
                 else:
                     if day_name in constraint:
-                        number += 1
+                        # Bigger cost for a day constraint
+                        number += 3
         return number
 
     def find_all_assignments_for_all_profs(self):

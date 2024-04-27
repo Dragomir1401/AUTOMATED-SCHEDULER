@@ -23,9 +23,10 @@ class RandomRestartHillClimbing:
         number_of_restarts = 0
 
         for _ in range(self.max_restarts):
+            # Ensure we start with a fresh state
             current_state = (
                 self.init_state_base.clone()
-            )  # Ensure we start with a fresh state
+            )
             iterations, solution = self.hill_climbing(current_state)
 
             total_iterations += iterations

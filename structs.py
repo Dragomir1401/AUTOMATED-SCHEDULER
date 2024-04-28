@@ -54,6 +54,7 @@ class ConstraintManager:
         """Returns the total number of students"""
         return self.initial_total_students
 
+    @lru_cache(maxsize=None)
     def number_of_profs_accepting_activity(self, activity):
         """Returns the number of professors accepting the activity"""
         number = 0

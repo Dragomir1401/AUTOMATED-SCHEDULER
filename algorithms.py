@@ -109,7 +109,7 @@ class AStarSearch:
 
         while open_set:
             explored_nodes += 1
-            current_cost, current_node = heapq.heappop(open_set)
+            _, current_node = heapq.heappop(open_set)
             remaining_students = current_node.get_remaining_students()
 
             print(f"Remaining students: {remaining_students}")
@@ -140,9 +140,9 @@ class AStarSearch:
                 stagnation_counter = 0
 
             closed_set.add(current_node)
-            neighbours = current_node.get_next_states()
+            neighbors = current_node.get_next_states()
 
-            for neighbor in neighbours:
+            for neighbor in neighbors:
                 expanded_nodes += 1
                 for closed_node in closed_set:
                     if neighbor.__eq__(closed_node):

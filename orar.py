@@ -3,7 +3,7 @@ from structs import TimetableNode, ConstraintManager
 from algorithms import RandomRestartHillClimbing, AStarSearch
 from utils import *
 
-MAX_HC_ITERATIONS = 1000
+MAX_HC_ITERATIONS = 10000
 MAX_RESTARTS = 20
 
 def create_days_dict(yaml_dict):

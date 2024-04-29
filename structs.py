@@ -158,7 +158,7 @@ class TimetableNode:
         if day_name not in self.constraints_manager.constraints[ZILE]:
             return False
 
-        # Profesors can't have more than 7 activities
+        # Professors can't have more than 7 activities
         if self.professors[profesor] > 6:
             return False
 
@@ -167,12 +167,12 @@ class TimetableNode:
             return False
 
         # If profesor is already assigned to an activity in the same interval
-        for place, assignment in self.days[day_name][interval_tuple].items():
+        for _, assignment in self.days[day_name][interval_tuple].items():
             if assignment and assignment[0] == profesor:
                 return False
 
         # If room is already used in that interval
-        for place, assignment in self.days[day_name][interval_tuple].items():
+        for _, assignment in self.days[day_name][interval_tuple].items():
             if assignment and assignment[1] == activity:
                 return False
 
@@ -219,7 +219,7 @@ class TimetableNode:
         student_penalty = (remaining_students**2) * 50
 
         # Dynamically adjust weights based on the current state
-        if remaining_students < remaining_students / 5:
+        if remaining_students < self.constraints_manager.get_total_number_of_students() / 5:
             # Increase penalty for soft constraints violated as we get closer to assigning all students
             constraint_penalty = soft_violations * 300000 + pause_violations * 1000
         else:
@@ -251,9 +251,9 @@ class TimetableNode:
     def number_of_assignments(self):
         """Returns the number of assignments in the current node"""
         number = 0
-        for day_name, intervals in self.days.items():
-            for interval_tuple, assignments in intervals.items():
-                for place, assignment in assignments.items():
+        for _, intervals in self.days.items():
+            for _, assignments in intervals.items():
+                for _, assignment in assignments.items():
                     if assignment:
                         number += 1
 
@@ -290,7 +290,7 @@ class TimetableNode:
 
         for day_name, intervals in self.days.items():
             for interval_tuple, assignments in intervals.items():
-                for place, assignment in assignments.items():
+                for _, assignment in assignments.items():
                     if assignment:
                         prof = assignment[0]
                         number, number_p = self.number_of_constrains_violated(

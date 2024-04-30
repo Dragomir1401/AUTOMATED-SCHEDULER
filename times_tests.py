@@ -30,7 +30,7 @@ def run_test(test_type, run_number, algorithm="astar"):
     not_assigned_count = int(not_assigned.group(1)) if not_assigned else 0
 
     # Log results to file
-    with open("times_hc.log", "a") as log_file:
+    with open("second_test_astar_times.log", "a") as log_file:
         log_file.write(
             f"Elapsed time for test {run_number} on {test_type}: {elapsed_time:.2f} seconds\n"
         )
@@ -49,11 +49,11 @@ BONUS = "orar_bonus_exact"
 
 
 def main():
-    test_types = [MIC, DUMMY, MEDIU, MARE, CONSTRANS]
+    test_types = [DUMMY, MIC, MEDIU, MARE, CONSTRANS]
 
     for test_type in test_types:
         print(f"Running tests for {test_type}...\n")
-        with open("times_hc.log", "a") as log_file:
+        with open("second_test_astar_times.log", "a") as log_file:
             log_file.write(
                 f"-------------------- Results for {test_type} --------------------\n"
             )
@@ -61,13 +61,13 @@ def main():
         times = []
 
         # Run 3 to 5 examples for each test type
-        for run_number in range(1, 6):
-            elapsed_time = run_test(test_type, run_number, "hc")
+        for run_number in range(1, 10):
+            elapsed_time = run_test(test_type, run_number, "astar")
             times.append(elapsed_time)
 
         # Calculate average time and log to file
         average_time = sum(times) / len(times)
-        with open("times_hc.log", "a") as log_file:
+        with open("second_test_astar_times.log", "a") as log_file:
             log_file.write(
                 f"Average run time for {test_type}: {average_time:.2f} seconds\n\n"
             )

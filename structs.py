@@ -166,7 +166,7 @@ class TimetableNode:
         if activity not in constraints[MATERII]:
             return False
 
-        # If profesor is already assigned to an activity in the same interval
+        # If professor is already assigned to an activity in the same interval
         for _, assignment in self.days[day_name][interval_tuple].items():
             if assignment and assignment[0] == profesor:
                 return False

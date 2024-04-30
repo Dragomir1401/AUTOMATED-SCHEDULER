@@ -1,0 +1,195 @@
+-------------------- Results for dummy --------------------
+Elapsed time for test 1 on dummy: 0.10 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 2 on dummy: 0.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 3 on dummy: 0.08 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 4 on dummy: 0.08 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 5 on dummy: 0.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 6 on dummy: 0.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 7 on dummy: 0.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 8 on dummy: 0.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 9 on dummy: 0.10 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Average run time for dummy: 0.09 seconds
+
+-------------------- Results for orar_mic_exact --------------------
+Elapsed time for test 1 on orar_mic_exact: 3.59 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_mic_exact: 3.71 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_mic_exact: 3.69 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_mic_exact: 3.47 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_mic_exact: 3.71 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 6 on orar_mic_exact: 3.43 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 7 on orar_mic_exact: 3.77 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 8 on orar_mic_exact: 3.68 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 9 on orar_mic_exact: 3.61 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Average run time for orar_mic_exact: 3.63 seconds
+
+-------------------- Results for orar_mediu_relaxat --------------------
+Elapsed time for test 1 on orar_mediu_relaxat: 31.20 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_mediu_relaxat: 29.77 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_mediu_relaxat: 29.33 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_mediu_relaxat: 29.89 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_mediu_relaxat: 29.84 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 6 on orar_mediu_relaxat: 28.50 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 7 on orar_mediu_relaxat: 29.24 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 8 on orar_mediu_relaxat: 28.37 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 9 on orar_mediu_relaxat: 30.07 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Average run time for orar_mediu_relaxat: 29.58 seconds
+
+-------------------- Results for orar_mare_relaxat --------------------
+Elapsed time for test 1 on orar_mare_relaxat: 117.35 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_mare_relaxat: 112.65 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_mare_relaxat: 111.79 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_mare_relaxat: 113.43 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_mare_relaxat: 111.75 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 6 on orar_mare_relaxat: 112.85 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 7 on orar_mare_relaxat: 113.06 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 8 on orar_mare_relaxat: 112.32 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 9 on orar_mare_relaxat: 113.65 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Average run time for orar_mare_relaxat: 113.20 seconds
+
+-------------------- Results for orar_constrans_incalcat --------------------
+Elapsed time for test 1 on orar_constrans_incalcat: 13.13 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 2 on orar_constrans_incalcat: 12.82 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 3 on orar_constrans_incalcat: 13.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 4 on orar_constrans_incalcat: 13.18 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 5 on orar_constrans_incalcat: 15.20 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 6 on orar_constrans_incalcat: 13.22 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 7 on orar_constrans_incalcat: 13.12 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 8 on orar_constrans_incalcat: 12.88 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Elapsed time for test 9 on orar_constrans_incalcat: 13.09 seconds
+A* algorithm output is suppressed.
+Not Assigned Students: 0
+
+Average run time for orar_constrans_incalcat: 13.30 seconds
+
